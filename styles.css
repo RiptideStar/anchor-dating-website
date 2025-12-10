@@ -12,17 +12,19 @@
 body, html {
     height: 100%;
     font-family: 'Inter', sans-serif;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .hero {
     background-image: url('anchor-landing-bg.jpg');
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height - accounts for iOS browser chrome */
     width: 100%;
     position: relative;
     padding: 60px; /* Adjust padding to match visual */
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); /* Account for home indicator */
 }
 
 .content {
@@ -52,7 +54,7 @@ body, html {
 
 .footer {
     position: absolute;
-    bottom: 60px;
+    bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     right: 60px; /* Move to right to match mobile/request logic if consistent, or keep separate */
     left: auto; /* Reset left */
     display: flex;
@@ -152,6 +154,7 @@ body, html {
 @media (max-width: 768px) {
     .hero {
         padding: 30px;
+        padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
         display: flex;
         flex-direction: column;
         justify-content: space-between;
