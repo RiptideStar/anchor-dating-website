@@ -70,11 +70,33 @@ export default function SignupForm({
           const checkResponse = await fetch("/api/check-existing-user", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone: formData.phone }),
+          body: JSON.stringify({ phone: formData.phone, email: formData.email }),
           });
 
-          if (checkResponse.ok) {
-            const checkData = await checkResponse.json();
+        const checkData = await checkResponse.json().catch(async () => {
+          // If JSON parsing fails, try to get text
+          const text = await checkResponse.text();
+          return { error: text || "Unknown error" };
+        });
+        console.log("Check response:", checkData);
+
+        // Check for mismatch errors (email/phone combination issue)
+        if (checkData.mismatch && checkData.error) {
+          console.log("Mismatch detected:", checkData.error);
+          toast.error(checkData.error);
+          setIsCheckingUser(false);
+          
+          // Set appropriate field error
+          if (checkData.errorType === "email_mismatch" || checkData.errorType === "both_mismatch") {
+            setErrors({ ...errors, email: checkData.error });
+          }
+          if (checkData.errorType === "phone_mismatch" || checkData.errorType === "both_mismatch") {
+            setErrors({ ...errors, phone: checkData.error });
+          }
+          return; // Don't proceed to payment
+        }
+
+        if (checkResponse.ok) {
             console.log("Initial check response:", checkData);
 
             if (
@@ -136,17 +158,38 @@ export default function SignupForm({
       setIsCheckingUser(true);
 
       try {
-        // First, check if user exists and has tickets by phone number
-        console.log("Checking for existing user with phone:", formData.phone);
+        // First, check if user exists by both email and phone number
+        console.log("Checking for existing user with phone:", formData.phone, "email:", formData.email);
         const checkResponse = await fetch("/api/check-existing-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ phone: formData.phone }),
+          body: JSON.stringify({ phone: formData.phone, email: formData.email }),
         });
 
+        const checkData = await checkResponse.json().catch(async () => {
+          // If JSON parsing fails, try to get text
+          const text = await checkResponse.text();
+          return { error: text || "Unknown error" };
+        });
+        console.log("Check response:", checkData);
+
+        // Check for mismatch errors (email/phone combination issue)
+        if (checkData.mismatch && checkData.error) {
+          console.log("Mismatch detected:", checkData.error);
+          toast.error(checkData.error);
+          setIsCheckingUser(false);
+          
+          // Set appropriate field error
+          if (checkData.errorType === "email_mismatch" || checkData.errorType === "both_mismatch") {
+            setErrors({ ...errors, email: checkData.error });
+          }
+          if (checkData.errorType === "phone_mismatch" || checkData.errorType === "both_mismatch") {
+            setErrors({ ...errors, phone: checkData.error });
+          }
+          return; // Don't proceed to payment
+        }
+
         if (checkResponse.ok) {
-          const checkData = await checkResponse.json();
-          console.log("Check response:", checkData);
 
           // If user exists and has tickets, show them
           if (
@@ -169,8 +212,12 @@ export default function SignupForm({
         } else {
           console.error(
             "Failed to check existing user:",
-            await checkResponse.text()
+            checkData.error || "Unknown error"
           );
+          // If it's a mismatch error, we already handled it above
+          if (checkData.mismatch) {
+            return;
+          }
         }
 
         // If no existing tickets, proceed normally
