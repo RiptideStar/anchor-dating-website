@@ -53,7 +53,6 @@ export default function ScrollAnimatedLanding({
     }
   };
 
-  // Interpolate values based on scroll progress
   const easeInOutCubic = (t: number) => {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   };
@@ -93,9 +92,10 @@ export default function ScrollAnimatedLanding({
 
   // Profile card transforms
   const profileOpacity = 1;
-  const profileScale = 1 + easedProgress * 0.4;
+  const profileScale = 1 + easedProgress * 0.2;
   const profileY = 0 - easedProgress * 250;
   const ProfileX = 0;
+
   // Card locations and
   const cardX = 0 - easedProgress * 500;
   const cardY = 0 - easedProgress * 100;
@@ -105,18 +105,15 @@ export default function ScrollAnimatedLanding({
   // const cardRotate = (1 - easedProgress) * 15;
 
   // Bar card locations
-  const barCardX = 0 + easedProgress * 250;
-  const barCardY = 0 - easedProgress * 100;
-  const barCardScale = 1 - easedProgress / 2;
+  const barCardX = 0 + easedProgress * 280;
+  const barCardY = 0 - easedProgress * 200;
+  const barCardScale = 1 - easedProgress / 1.6;
   const barCardRotate = 0 + easedProgress * 50;
   return (
     <div ref={containerRef} className="min-h-[200vh] w-full bg-white relative">
-      {/* Sticky container */}
       <div className="sticky top-0 min-h-screen w-full flex items-center justify-center p-8 md:p-12 lg:p-16 overflow-hidden">
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          {/* Left Side */}
           <div className="relative">
-            {/* Logo - fades and moves up */}
             <motion.div
               className="inline-block bg-gray-100 rounded-xl px-6 py-3 shadow-sm w-fit mb-8"
               style={{
@@ -130,7 +127,6 @@ export default function ScrollAnimatedLanding({
               </h1>
             </motion.div>
 
-            {/* First Headline - fades out */}
             <motion.h2
               className="font-serif text-4xl md:text-5xl lg:text-6xl font-normal leading-tight text-black absolute top-16"
               style={{
@@ -142,7 +138,6 @@ export default function ScrollAnimatedLanding({
               back to <span className="italic">dating</span>.
             </motion.h2>
 
-            {/* New Text - fades in */}
             <motion.h2
               className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-black"
               style={{
@@ -154,7 +149,6 @@ export default function ScrollAnimatedLanding({
               Because dating apps have a ~2% match-to-date rate
             </motion.h2>
 
-            {/* Form - fades out */}
             <motion.form
               onSubmit={handleSubmit}
               className="flex gap-0 w-full max-w-md mt-8 absolute top-64"
@@ -182,20 +176,19 @@ export default function ScrollAnimatedLanding({
             </motion.form>
           </div>
 
-          {/* Right Side */}
           <div
             className="relative flex justify-center  
             bg-[linear-gradient(180deg,rgba(158,170,190,0.23)_9.13%,rgba(10,92,232,0.23)_100%)]
-             shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] 
+             shadow-[0px_2px_2px_0px_rgba(0,0,0,0.25)] 
              "
             style={{
               width: 774,
               height: 800,
               alignItems: "center",
               justifyContent: "center",
+              borderRadius: "2rem",
             }}
           >
-            {/* Phone Frame - fades out */}
             <div
               style={{
                 backgroundImage: "url('/iphone.png')",
@@ -209,27 +202,22 @@ export default function ScrollAnimatedLanding({
                 filter: `blur(${phoneContentBlur}px)`,
               }}
             ></div>
-            {/* Chat Bubble - appears */}
 
             <div
               className="absolute bottom-80 left-1/2 -translate-x-1/2 w-[85%]"
               style={{
                 opacity: profileOpacity,
                 transform: `translateX(${barCardX}px) translateY(${barCardY}px) rotate(${barCardRotate}deg) scale(${barCardScale})`,
-
                 width: "50%",
               }}
             >
-              {/* Profile Info */}
-              <img src="/bar.png" alt="Profile" className="w-100 h-50 " />
+              <img src="/bar.png" alt="Profile" className="w-100 h-50" />
             </div>
             <div
               className="absolute bottom-8 left-1/2 -translate-x-1/2 w-[85%]"
               style={{
                 opacity: profileOpacity,
-                // transform: `translateY(${profileY}px) scale(${profileScale})`,
                 transform: `translateX(${ProfileX}px) translateY(${profileY}px) rotate(${cardRotate}deg) scale(${profileScale})`,
-
                 width: "50%",
               }}
             >
@@ -243,17 +231,15 @@ export default function ScrollAnimatedLanding({
               className="absolute bottom-140 left-1/2 -translate-x-1/2 w-[85%]"
               style={{
                 opacity: profileOpacity,
-                // transform: `translateY(${profileY}px) scale(${profileScale})`,
                 transform: `translateX(${cardX}px) translateY(${cardY}px) rotate(${cardRotate}deg) scale(${cardScale})`,
                 width: "50%",
               }}
             >
               <div
-                className="bg-white rounded-2xl px-6 py-4 shadow-xl z-10"
+                className="bg-white rounded-2xl px-6 py-4 shadow-xl z-10 "
                 style={{
-                  // opacity: chatOpacity,
-                  // transform: `translateY(${chatY}px) scale(${chatScale})`,
                   maxWidth: "100%",
+                  padding: "1rem",
                 }}
               >
                 <p className="text-xs text-gray-500 font-serif mb-1">What?</p>
