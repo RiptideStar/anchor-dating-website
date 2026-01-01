@@ -6,7 +6,7 @@ import { FormData } from "@/app/page";
 import toast from "react-hot-toast";
 
 interface SignupFormProps {
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData, userId?: string) => void;
   onBack: () => void;
   initialFormData?: FormData;
 }
@@ -52,6 +52,7 @@ export default function SignupForm({
   const [isCheckingUser, setIsCheckingUser] = useState(false);
   const [showExistingTickets, setShowExistingTickets] = useState(false);
   const [hasCheckedOnLoad, setHasCheckedOnLoad] = useState(false);
+  const [userId, setUserId] = useState<string>("");
 
   // Check for existing tickets when component loads with phone number
   useEffect(() => {
@@ -190,7 +191,10 @@ export default function SignupForm({
         }
 
         if (checkResponse.ok) {
-
+          // Store userId if user exists
+          if (checkData.userId) {
+            setUserId(checkData.userId);
+          }
           // If user exists and has tickets, show them
           if (
             checkData.exists &&
@@ -228,7 +232,16 @@ export default function SignupForm({
           body: JSON.stringify(formData),
         });
 
-        if (!saveResponse.ok) {
+        let finalUserId = userId || checkData.userId;
+
+        if (saveResponse.ok) {
+          const saveData = await saveResponse.json().catch(() => ({}));
+          // Get userId from saved user data
+          if (saveData.data && saveData.data[0] && saveData.data[0].id) {
+            finalUserId = saveData.data[0].id;
+            setUserId(finalUserId);
+          }
+        } else {
           const errorData = await saveResponse.json().catch(() => ({}));
           console.error(
             "Failed to save user to wishlist:",
@@ -254,11 +267,11 @@ export default function SignupForm({
           toast.error(errorData.error || "Failed to save. Please try again.");
         }
 
-        onSubmit(formData);
+        onSubmit(formData, finalUserId);
       } catch (error) {
         console.error("Error checking/saving user:", error);
         // Continue anyway - don't block the flow
-        onSubmit(formData);
+        onSubmit(formData, userId || checkData.userId || undefined);
       } finally {
         setIsCheckingUser(false);
       }
@@ -280,7 +293,7 @@ export default function SignupForm({
       console.error("Error saving user:", error);
     }
 
-    onSubmit(formData);
+    onSubmit(formData, userId);
   };
 
   const handleStoreClick = (store: "appstore" | "playstore") => {

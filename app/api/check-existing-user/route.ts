@@ -108,25 +108,21 @@ export async function POST(request: NextRequest) {
     // If no mismatch, proceed with normal flow
     const user = userByPhone || userByEmail;
 
-    // If user exists, get their tickets from tickets table
+    // If user exists, get their tickets from tickets table by user_id
     let tickets = [];
     if (user) {
-      const searchPhone = normalizedPhone || normalizePhone(user.phone || "");
-      
-      // Get all tickets from tickets table and filter by normalized phone
-      const { data: allTickets, error: ticketsError } = await supabase
+      // Get tickets by user_id
+      const { data: userTickets, error: ticketsError } = await supabase
         .from("tickets")
-        .select("*")
-        .order("ticket_purchased_at", { ascending: false });
+        .select("id, user_id, payment_intent_id, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
-      if (!ticketsError && allTickets) {
-        // Filter tickets by normalized phone number
-        tickets = allTickets.filter(
-          (t) => normalizePhone(t.phone || "") === searchPhone
-        );
+      if (!ticketsError && userTickets) {
+        tickets = userTickets;
       }
       
-      console.log("Found user:", user.email, "Tickets:", tickets.length);
+      console.log("Found user:", user.email, "User ID:", user.id, "Tickets:", tickets.length);
     } else {
       console.log("No user found");
     }
@@ -134,6 +130,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       exists: !!user,
       user: user || null,
+      userId: user?.id || null,
       tickets: tickets,
       mismatch: false,
     });
