@@ -271,7 +271,7 @@ export default function SignupForm({
       } catch (error) {
         console.error("Error checking/saving user:", error);
         // Continue anyway - don't block the flow
-        onSubmit(formData, userId || checkData.userId || undefined);
+        onSubmit(formData, userId || undefined);
       } finally {
         setIsCheckingUser(false);
       }

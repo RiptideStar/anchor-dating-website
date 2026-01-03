@@ -109,7 +109,13 @@ export async function POST(request: NextRequest) {
     const user = userByPhone || userByEmail;
 
     // If user exists, get their tickets from tickets table by user_id
-    let tickets = [];
+    type Ticket = {
+      id: string;
+      user_id: string;
+      payment_intent_id: string | null;
+      created_at: string;
+    };
+    let tickets: Ticket[] = [];
     if (user) {
       // Get tickets by user_id
       const { data: userTickets, error: ticketsError } = await supabase
