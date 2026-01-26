@@ -36,8 +36,8 @@ export default function EventsList({ events, loading, onEventClick }: EventsList
   }
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="flex flex-col items-center gap-6 w-full max-w-md">
+    <div className="w-full flex justify-center px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col items-center gap-10 w-full max-w-3xl">
         {events.map((event, index) => (
           <motion.div
             key={event.id}
@@ -45,36 +45,38 @@ export default function EventsList({ events, loading, onEventClick }: EventsList
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1, duration: 0.5 }}
             onClick={() => onEventClick(event)}
-            className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl overflow-hidden cursor-pointer transition-all hover:border-white/20 hover:scale-105 w-full"
+            className="relative rounded-3xl border border-white/20 bg-white/10 backdrop-blur-3xl shadow-2xl overflow-hidden cursor-pointer transition-all hover:border-white/30 hover:scale-[1.02] w-full "
             style={{
-              boxShadow: "0 25px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+              boxShadow: "0 25px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)",
+              padding: "20px",
+              
             }}
           >
-          {event.image_url && (
-            <div
-              className="h-48 bg-cover bg-center"
-              style={{ backgroundImage: `url('${event.image_url}')` }}
-            />
-          )}
-          <div className="p-6">
-            <h3 className="font-serif text-2xl text-white font-light mb-2">
-              {event.title}
-            </h3>
-            <p className="font-serif text-white/70 text-sm mb-4 line-clamp-2">
-              {event.description}
-            </p>
-            <div className="flex items-center justify-between">
-              <span className="font-serif text-white/80 text-sm">
-                ${event.price.toFixed(2)}
-              </span>
-              <span className="font-serif text-white/60 text-xs">
-                {new Date(event.date).toLocaleDateString()}
-              </span>
+            {event.image_url && (
+              <div
+                className="h-64 bg-cover bg-center"
+                style={{ backgroundImage: `url('${event.image_url}')` }}
+              />
+            )}
+            <div className="px-12 py-14 md:px-16 md:py-20">
+              <h3 className="font-serif text-4xl md:text-5xl text-white font-light mb-6 leading-tight">
+                {event.title}
+              </h3>
+              <p className="font-serif text-white/80 text-lg md:text-xl mb-12 line-clamp-3 leading-relaxed">
+                {event.description}
+              </p>
+              <div className="flex items-center justify-between pt-10 border-t border-white/20">
+                <span className="font-serif text-white text-2xl md:text-3xl font-medium">
+                  ${event.price.toFixed(2)}
+                </span>
+                <span className="font-serif text-white/70 text-lg">
+                  {new Date(event.date).toLocaleDateString()}
+                </span>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      ))}
+          </motion.div>
+        ))}
       </div>
     </div>
   )

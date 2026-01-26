@@ -52,7 +52,7 @@ export default function EventDetail({ event, onBuyTicket, onSeeHistory, onBack }
     >
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60" />
 
-      <div className="relative z-10 min-h-screen p-6">
+      <div className="relative z-10 min-h-screen p-6 flex flex-col">
         {/* Back Button */}
         <motion.button
           onClick={onBack}
@@ -67,67 +67,69 @@ export default function EventDetail({ event, onBuyTicket, onSeeHistory, onBack }
           Back to Events
         </motion.button>
 
-        <div className="mx-auto max-w-4xl">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-full max-w-4xl">
           <motion.div
-            className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl p-8 md:p-12"
+            className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl p-12 md:p-20 lg:p-24 xl:p-28"
             initial={{ opacity: 0, y: 50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
             style={{
               boxShadow: "0 25px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+              background: "linear-gradient(135deg, rgba(213, 15, 15, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
             }}
           >
             <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/5 via-transparent to-blue-500/5 pointer-events-none" />
 
-            <div className="relative z-10">
+            <div className="relative z-10 px-2 md:px-4" style={{padding: "20px"}}>
               {/* Event Title */}
               <motion.h1
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
-                className="mb-6 font-serif text-5xl md:text-7xl text-white font-light"
+                className="mb-10 md:mb-12 font-serif text-5xl md:text-7xl text-white font-light"
+                
               >
                 {event.title}
               </motion.h1>
 
               {/* Event Details */}
-              <div className="mb-8 space-y-4">
+              <div className="mb-10 md:mb-12 space-y-5 md:space-y-6">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
-                  className="flex items-center gap-3 text-white/80"
+                  className="flex items-center gap-4 text-white/80"
                 >
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-6 w-6 md:h-7 md:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span className="font-serif text-lg">{formattedDate} at {formattedTime}</span>
+                  <span className="font-serif text-lg md:text-xl">{formattedDate} at {formattedTime}</span>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
-                  className="flex items-center gap-3 text-white/80"
+                  className="flex items-center gap-4 text-white/80"
                 >
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-6 w-6 md:h-7 md:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <span className="font-serif text-lg">{event.location}</span>
+                  <span className="font-serif text-lg md:text-xl">{event.location}</span>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6, duration: 0.5 }}
-                  className="flex items-center gap-3 text-white/80"
+                  className="flex items-center gap-4 text-white/80"
                 >
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-6 w-6 md:h-7 md:w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="font-serif text-lg">${event.price.toFixed(2)}</span>
+                  <span className="font-serif text-lg md:text-xl">${event.price.toFixed(2)}</span>
                 </motion.div>
               </div>
 
@@ -136,7 +138,7 @@ export default function EventDetail({ event, onBuyTicket, onSeeHistory, onBack }
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7, duration: 0.5 }}
-                className="mb-8"
+                className="mb-10 md:mb-12"
               >
                 <p className="text-white/70 font-serif text-lg md:text-xl font-light leading-relaxed whitespace-pre-line">
                   {event.description}
@@ -144,13 +146,13 @@ export default function EventDetail({ event, onBuyTicket, onSeeHistory, onBack }
               </motion.div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-5 md:gap-6">
                 <motion.button
                   onClick={onBuyTicket}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, duration: 0.5 }}
-                  className="group relative flex-1 flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-8 py-6 font-serif text-xl font-normal text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40"
+                  className="group relative flex-1 flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-10 py-7 md:px-12 md:py-8 font-serif text-xl font-normal text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   style={{
@@ -184,7 +186,7 @@ export default function EventDetail({ event, onBuyTicket, onSeeHistory, onBack }
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9, duration: 0.5 }}
-                  className="group relative flex-1 flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/20 bg-white/10 px-8 py-6 font-serif text-xl font-normal text-white backdrop-blur-xl transition-all hover:border-white/40 hover:bg-white/20"
+                  className="group relative flex-1 flex items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/20 bg-white/10 px-10 py-7 md:px-12 md:py-8 font-serif text-xl font-normal text-white backdrop-blur-xl transition-all hover:border-white/40 hover:bg-white/20"
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -206,6 +208,7 @@ export default function EventDetail({ event, onBuyTicket, onSeeHistory, onBack }
               </div>
             </div>
           </motion.div>
+          </div>
         </div>
       </div>
     </motion.div>

@@ -71,7 +71,7 @@ export default function EmailEntryForm({ onSuccess, onCancel, title = "Enter You
       >
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/5 via-transparent to-blue-500/5 pointer-events-none" />
 
-        <div className="relative z-10">
+        <div className="relative z-10" style={{padding: "20px",}}>
           <h2 className="mb-6 font-serif text-3xl text-white font-light text-center">
             {title}
           </h2>
@@ -79,9 +79,9 @@ export default function EmailEntryForm({ onSuccess, onCancel, title = "Enter You
             Enter your email to continue
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block mb-2 font-serif text-white/80 text-sm">
+          <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
+            <div style={{margin: "20px"}}>
+              <label htmlFor="email" className="block mb-3 md:mb-4 font-serif text-white/80 text-sm">
                 Email *
               </label>
               <input
@@ -95,8 +95,8 @@ export default function EmailEntryForm({ onSuccess, onCancel, title = "Enter You
               />
             </div>
 
-            <div>
-              <label htmlFor="name" className="block mb-2 font-serif text-white/80 text-sm">
+            <div style={{margin: "20px"}}>
+              <label htmlFor="name" className="block mb-3 md:mb-4 font-serif text-white/80 text-sm">
                 Name (Optional)
               </label>
               <input
@@ -109,8 +109,8 @@ export default function EmailEntryForm({ onSuccess, onCancel, title = "Enter You
               />
             </div>
 
-            <div>
-              <label htmlFor="phone" className="block mb-2 font-serif text-white/80 text-sm">
+            <div style={{margin: "20px"}}>
+              <label htmlFor="phone" className="block mb-3 md:mb-4 font-serif text-white/80 text-sm">
                 Phone Number (Optional)
               </label>
               <input
@@ -123,7 +123,7 @@ export default function EmailEntryForm({ onSuccess, onCancel, title = "Enter You
               />
             </div>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-6" style={{margin: "20px"}}>
               <motion.button
                 type="button"
                 onClick={onCancel}
