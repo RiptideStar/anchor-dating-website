@@ -7,7 +7,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables')
 }
 
-// Create a Supabase client for client-side operations
+// Legacy export for backward compatibility
+// NEW CODE SHOULD USE: import { createClient } from '@/lib/supabase/client'
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     persistSession: true,

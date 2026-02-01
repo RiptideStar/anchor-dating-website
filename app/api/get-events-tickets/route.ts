@@ -13,45 +13,90 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey)
-    const { email } = await request.json()
+    const body = await request.json().catch(() => ({}))
+    const { email, user_id: userId, access_token: accessToken } = body
 
-    if (!email) {
+    if (!email && !userId && !accessToken) {
       return NextResponse.json(
-        { error: 'Email is required' },
+        { error: 'Email, user_id, or access_token is required' },
         { status: 400 }
       )
     }
 
-    // Get user from events_website_users table
-    const { data: user, error: userError } = await supabase
-      .from('events_website_users')
-      .select('id, email, name')
-      .eq('email', email.toLowerCase().trim())
-      .single()
+    const supabase = createClient(supabaseUrl, supabaseKey)
+    let user: { id: string; email: string | null; name: string | null } | null = null
 
-    if (userError || !user) {
+    // Prefer session: use access_token so RLS allows reading own profile
+    if (accessToken) {
+      const authClient = createClient(supabaseUrl, supabaseKey, {
+        global: { headers: { Authorization: `Bearer ${accessToken}` } },
+      })
+      const { data: { user: authUser } } = await authClient.auth.getUser()
+      if (authUser?.id) {
+        const { data: p, error: profileError } = await authClient
+          .from('users')
+          .select('id, email, first_name, last_name')
+          .eq('auth_user_id', authUser.id)
+          .single()
+        if (!profileError && p) {
+          const name = [p.first_name, p.last_name].filter(Boolean).join(' ').trim() || null
+          user = { id: p.id, email: p.email ?? null, name }
+        }
+      }
+    }
+    if (!user && userId) {
+      const { data: p, error: profileError } = await supabase
+        .from('users')
+        .select('id, email, first_name, last_name')
+        .eq('id', userId)
+        .single()
+      if (!profileError && p) {
+        const name = [p.first_name, p.last_name].filter(Boolean).join(' ').trim() || null
+        user = { id: p.id, email: p.email ?? null, name }
+      }
+    }
+    if (!user && email) {
+      const { data: p } = await supabase
+        .from('users')
+        .select('id, email, first_name, last_name')
+        .eq('email', email.toLowerCase().trim())
+        .maybeSingle()
+      if (p) {
+        const name = [p.first_name, p.last_name].filter(Boolean).join(' ').trim() || null
+        user = { id: p.id, email: p.email ?? null, name }
+      }
+    }
+
+    if (!user) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
 
-    // Get tickets by email (tickets table has email column)
-    const { data: tickets, error: ticketsError } = await supabase
+    // Get tickets by user_id first (events website users), then by email
+    let tickets: unknown[] = []
+    const { data: byUserId, error: byUserIdError } = await supabase
       .from('tickets')
       .select('*')
-      .eq('email', email.toLowerCase().trim())
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
-    if (ticketsError) {
-      console.error('Error fetching tickets:', ticketsError)
-      // If tickets table doesn't exist, return empty array
-      if (ticketsError.code === '42P01' || ticketsError.message?.includes('does not exist')) {
-        return NextResponse.json({ success: true, tickets: [], user })
-      }
+    if (!byUserIdError && byUserId?.length) {
+      tickets = byUserId
+    } else if (user.email) {
+      const { data: byEmail } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('email', user.email.toLowerCase().trim())
+        .order('created_at', { ascending: false })
+      tickets = byEmail || []
+    }
+
+    if (byUserIdError && byUserIdError.code !== '42P01' && !byUserIdError.message?.includes('does not exist')) {
+      console.error('Error fetching tickets:', byUserIdError)
       return NextResponse.json(
-        { error: 'Failed to fetch tickets', details: ticketsError.message },
+        { error: 'Failed to fetch tickets', details: byUserIdError.message },
         { status: 500 }
       )
     }

@@ -9,6 +9,7 @@ import EmailEntryForm from "@/components/EmailEntryForm";
 import TicketsHistory from "@/components/TicketsHistory";
 import PaymentScreen from "@/components/PaymentScreen";
 import TicketSuccess from "@/components/TicketSuccess";
+import EventsProfileModal from "@/components/EventsProfileModal";
 import toast from "react-hot-toast";
 
 export type FormData = {
@@ -26,6 +27,7 @@ function EventsContent() {
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState<string>("");
   const [websiteUserId, setWebsiteUserId] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -33,6 +35,25 @@ function EventsContent() {
   });
   const [paymentIntentId, setPaymentIntentId] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+
+  // Hydrate user from localStorage (events route only)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedUserId = localStorage.getItem("anchor_events_websiteUserId");
+    const storedName = localStorage.getItem("anchor_events_userName");
+    const storedEmail = localStorage.getItem("anchor_events_userEmail");
+    if (storedUserId) {
+      setWebsiteUserId(storedUserId);
+      setUserName(storedName || "");
+      setUserEmail(storedEmail || "");
+      setFormData((prev) => ({
+        ...prev,
+        name: storedName || prev.name,
+        email: storedEmail || prev.email,
+      }));
+    }
+  }, []);
 
   // Fetch events on mount
   useEffect(() => {
@@ -64,40 +85,54 @@ function EventsContent() {
   };
 
   const handlePurchaseTicket = () => {
-    if (userEmail && websiteUserId && formData.email && formData.name) {
-      // User already authenticated with form data, go to payment
+    if (websiteUserId && formData.email && formData.name) {
       setStep("payment");
     } else {
-      // Need email entry
       setStep("email");
     }
   };
 
 
-  const handleEmailSuccess = (email: string, userId: string, name?: string, phone?: string) => {
+  const handleEmailSuccess = (email: string, id: string, name?: string, phone?: string) => {
     setUserEmail(email);
-    setWebsiteUserId(userId);
-    
-    // Update form data with email entry info
-    setFormData({
-      email: email,
-      name: name || "",
-      phone: phone || "",
-    });
-    
-    // Save to localStorage
+    setWebsiteUserId(id);
+    setUserName(name ?? "");
+    setFormData({ email, name: name ?? "", phone: phone ?? "" });
     localStorage.setItem("anchor_events_userEmail", email);
-    localStorage.setItem("anchor_events_websiteUserId", userId);
-    
-    // If we were trying to see history, show it now
+    localStorage.setItem("anchor_events_websiteUserId", id);
+    localStorage.setItem("anchor_events_userName", name ?? "");
     const previousStep = localStorage.getItem("anchor_events_pendingAction");
     if (previousStep === "history") {
       localStorage.removeItem("anchor_events_pendingAction");
       setStep("history");
     } else {
-      // Otherwise go directly to payment
       setStep("payment");
     }
+  };
+
+  const handleProfileLoginSuccess = (identifier: string, id: string, name?: string) => {
+    setWebsiteUserId(id);
+    setUserName(name || "");
+    setFormData((prev) => ({ ...prev, name: name || prev.name }));
+    if (identifier.includes("@")) {
+      setUserEmail(identifier);
+      localStorage.setItem("anchor_events_userEmail", identifier);
+    } else {
+      localStorage.setItem("anchor_events_phone", identifier);
+    }
+    localStorage.setItem("anchor_events_websiteUserId", id);
+    localStorage.setItem("anchor_events_userName", name || "");
+  };
+
+  const handleProfileLogout = () => {
+    setWebsiteUserId("");
+    setUserName("");
+    setUserEmail("");
+    setFormData({ name: "", email: "", phone: "" });
+    localStorage.removeItem("anchor_events_websiteUserId");
+    localStorage.removeItem("anchor_events_userName");
+    localStorage.removeItem("anchor_events_userEmail");
+    localStorage.removeItem("anchor_events_phone");
   };
 
   const handlePaymentSuccess = (intentId: string) => {
@@ -125,6 +160,14 @@ function EventsContent() {
             events={events}
             loading={loading}
             onEventClick={handleEventClick}
+            onOpenProfile={() => setProfileModalOpen(true)}
+            isLoggedIn={!!websiteUserId}
+            userName={userName || formData.name}
+            userId={websiteUserId}
+            onProfileLoginSuccess={handleProfileLoginSuccess}
+            onProfileLogout={handleProfileLogout}
+            profileModalOpen={profileModalOpen}
+            onCloseProfileModal={() => setProfileModalOpen(false)}
           />
         )}
         {step === "detail" && selectedEvent && (
@@ -132,13 +175,13 @@ function EventsContent() {
             key="detail"
             event={selectedEvent}
             onBuyTicket={() => {
-              if (!userEmail) {
+              if (!websiteUserId) {
                 localStorage.setItem("anchor_events_pendingAction", "purchase");
               }
               handlePurchaseTicket();
             }}
             onSeeHistory={() => {
-              if (!userEmail) {
+              if (!websiteUserId) {
                 localStorage.setItem("anchor_events_pendingAction", "history");
                 setStep("email");
               } else {
@@ -161,10 +204,10 @@ function EventsContent() {
             }}
           />
         )}
-        {step === "history" && userEmail && websiteUserId && (
+        {step === "history" && websiteUserId && (
           <TicketsHistory
             key="history"
-            email={userEmail}
+            email={userEmail || ""}
             userId={websiteUserId}
             onBuyNew={() => {
               // If we have form data, go to payment, otherwise get email again
@@ -222,9 +265,29 @@ interface EventsListPageProps {
   events: Event[];
   loading: boolean;
   onEventClick: (event: Event) => void;
+  onOpenProfile: () => void;
+  isLoggedIn: boolean;
+  userName: string;
+  userId: string;
+  onProfileLoginSuccess: (identifier: string, id: string, name?: string) => void;
+  onProfileLogout: () => void;
+  profileModalOpen: boolean;
+  onCloseProfileModal: () => void;
 }
 
-function EventsListPage({ events, loading, onEventClick }: EventsListPageProps) {
+function EventsListPage({
+  events,
+  loading,
+  onEventClick,
+  onOpenProfile,
+  isLoggedIn,
+  userName,
+  userId,
+  onProfileLoginSuccess,
+  onProfileLogout,
+  profileModalOpen,
+  onCloseProfileModal,
+}: EventsListPageProps) {
   return (
     <motion.div
       className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 bg-cover bg-center bg-no-repeat"
@@ -239,6 +302,21 @@ function EventsListPage({ events, loading, onEventClick }: EventsListPageProps) 
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
 
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        <div className="absolute top-6 right-4 sm:right-6 z-20">
+          <motion.button
+            type="button"
+            onClick={onOpenProfile}
+            className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-xl px-4 py-2.5 font-serif text-white hover:bg-white/20 transition-colors"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <svg className="w-5 h-5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-sm">{isLoggedIn ? userName || "Account" : "Log in"}</span>
+          </motion.button>
+        </div>
+
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -251,6 +329,18 @@ function EventsListPage({ events, loading, onEventClick }: EventsListPageProps) 
           <EventsList events={events} loading={loading} onEventClick={onEventClick} />
         </div>
       </div>
+
+      {profileModalOpen && (
+        <EventsProfileModal
+          isOpen={profileModalOpen}
+          onClose={onCloseProfileModal}
+          isLoggedIn={isLoggedIn}
+          userName={userName}
+          userId={userId}
+          onLoginSuccess={onProfileLoginSuccess}
+          onLogout={onProfileLogout}
+        />
+      )}
     </motion.div>
   );
 }

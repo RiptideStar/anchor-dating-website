@@ -21,7 +21,7 @@ interface TicketsHistoryProps {
   onClose: () => void
 }
 
-export default function TicketsHistory({ email, onBuyNew, onClose }: TicketsHistoryProps) {
+export default function TicketsHistory({ email, userId, onBuyNew, onClose }: TicketsHistoryProps) {
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -34,7 +34,7 @@ export default function TicketsHistory({ email, onBuyNew, onClose }: TicketsHist
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify(userId ? { user_id: userId } : { email }),
         })
 
         const data = await response.json()
@@ -54,7 +54,7 @@ export default function TicketsHistory({ email, onBuyNew, onClose }: TicketsHist
     }
     
     fetchTickets()
-  }, [email])
+  }, [email, userId])
 
 
   return (
