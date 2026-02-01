@@ -1,21 +1,25 @@
 "use client";
 
-import { motion } from 'framer-motion'
-import { Event } from './EventDetail'
+import { motion } from "framer-motion";
+import { Event } from "./EventDetail";
 
 interface EventsListProps {
-  events: Event[]
-  loading: boolean
-  onEventClick: (event: Event) => void
+  events: Event[];
+  loading: boolean;
+  onEventClick: (event: Event) => void;
 }
 
-export default function EventsList({ events, loading, onEventClick }: EventsListProps) {
+export default function EventsList({
+  events,
+  loading,
+  onEventClick,
+}: EventsListProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
       </div>
-    )
+    );
   }
 
   if (events.length === 0) {
@@ -32,7 +36,7 @@ export default function EventsList({ events, loading, onEventClick }: EventsList
           Check back soon for exciting events!
         </p>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -47,10 +51,10 @@ export default function EventsList({ events, loading, onEventClick }: EventsList
             onClick={() => onEventClick(event)}
             className="relative rounded-3xl border border-white/20 bg-white/10 backdrop-blur-3xl shadow-2xl overflow-hidden cursor-pointer transition-all hover:border-white/30 hover:scale-[1.02] w-full "
             style={{
-              boxShadow: "0 25px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
-              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)",
-              padding: "20px",
-              
+              boxShadow:
+                "0 25px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+              background:
+                "linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)",
             }}
           >
             {event.image_url && (
@@ -59,7 +63,7 @@ export default function EventsList({ events, loading, onEventClick }: EventsList
                 style={{ backgroundImage: `url('${event.image_url}')` }}
               />
             )}
-            <div className="px-12 py-14 md:px-16 md:py-20">
+            <div className="px-8 py-8 md:px-10 md:py-10">
               <h3 className="font-serif text-4xl md:text-5xl text-white font-light mb-6 leading-tight">
                 {event.title}
               </h3>
@@ -79,5 +83,5 @@ export default function EventsList({ events, loading, onEventClick }: EventsList
         ))}
       </div>
     </div>
-  )
+  );
 }
