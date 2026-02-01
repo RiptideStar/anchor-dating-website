@@ -210,6 +210,7 @@ function EventsContent() {
             key="history"
             email={userEmail || ""}
             userId={websiteUserId}
+            eventId={selectedEvent?.id}
             onBuyNew={() => {
               // Same as purchase: logged-in user goes straight to payment
               if (websiteUserId) {
@@ -232,6 +233,7 @@ function EventsContent() {
             key="payment"
             formData={formData}
             userId={websiteUserId || userId}
+            eventId={selectedEvent?.id}
             onSuccess={handlePaymentSuccess}
             onBack={() => {
               if (selectedEvent) {

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const { userId, paymentIntentId } = await request.json()
+    const { userId, paymentIntentId, event_id: eventId } = await request.json()
     if (!paymentIntentId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -23,12 +23,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Tickets table: id, user_id, payment_intent_id, created_at, status, updated_at (no email/name/phone)
+    // Tickets table: id, user_id, payment_intent_id, event_id, created_at, status, updated_at
     const ticketData: Record<string, unknown> = {
       payment_intent_id: paymentIntentId,
     }
     if (userId) {
       ticketData.user_id = userId
+    }
+    if (eventId) {
+      ticketData.event_id = eventId
     }
 
     const { data, error } = await supabase

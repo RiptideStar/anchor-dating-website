@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json().catch(() => ({}))
-    const { email, user_id: userId, access_token: accessToken } = body
+    const { email, user_id: userId, access_token: accessToken, event_id: eventId } = body
 
     if (!email && !userId && !accessToken) {
       return NextResponse.json(
@@ -74,12 +74,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get tickets by user_id (tickets table: id, user_id, payment_intent_id, created_at, status, updated_at)
+    // Get tickets by user_id (and optionally event_id so only tickets for this event are shown)
     let tickets: unknown[] = []
-    const { data: byUserId, error: byUserIdError } = await supabase
+    let query = supabase
       .from('tickets')
-      .select('id, user_id, payment_intent_id, created_at, status, updated_at')
+      .select('id, user_id, payment_intent_id, event_id, created_at, status, updated_at')
       .eq('user_id', user.id)
+    if (eventId) {
+      query = query.eq('event_id', eventId)
+    }
+    const { data: byUserId, error: byUserIdError } = await query
       .order('created_at', { ascending: false })
 
     if (!byUserIdError && byUserId?.length) {

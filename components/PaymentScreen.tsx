@@ -27,11 +27,12 @@ const stripePromise = loadStripe(stripeKey);
 interface PaymentScreenProps {
   formData: FormData;
   userId?: string;
+  eventId?: string;
   onSuccess: (paymentIntentId: string) => void;
   onBack: () => void;
 }
 
-function CheckoutForm({ formData, userId, onSuccess, onBack }: PaymentScreenProps) {
+function CheckoutForm({ formData, userId, eventId, onSuccess, onBack }: PaymentScreenProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -82,9 +83,7 @@ function CheckoutForm({ formData, userId, onSuccess, onBack }: PaymentScreenProp
           body: JSON.stringify({
             userId: userId,
             paymentIntentId: paymentIntent.id,
-            email: formData.email,
-            name: formData.name,
-            phone: formData.phone,
+            event_id: eventId,
           }),
         });
 
@@ -246,6 +245,7 @@ function CheckoutForm({ formData, userId, onSuccess, onBack }: PaymentScreenProp
 export default function PaymentScreen({
   formData,
   userId,
+  eventId,
   onSuccess,
   onBack,
 }: PaymentScreenProps) {
@@ -433,6 +433,7 @@ export default function PaymentScreen({
                 <CheckoutForm
                   formData={formData}
                   userId={userId}
+                  eventId={eventId}
                   onSuccess={onSuccess}
                   onBack={onBack}
                 />

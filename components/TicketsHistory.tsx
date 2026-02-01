@@ -17,11 +17,12 @@ interface Ticket {
 interface TicketsHistoryProps {
   email: string
   userId: string
+  eventId?: string
   onBuyNew: () => void
   onClose: () => void
 }
 
-export default function TicketsHistory({ email, userId, onBuyNew, onClose }: TicketsHistoryProps) {
+export default function TicketsHistory({ email, userId, eventId, onBuyNew, onClose }: TicketsHistoryProps) {
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -37,7 +38,7 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
       return fetch('/api/get-events-tickets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId, access_token: accessToken }),
+        body: JSON.stringify({ user_id: userId, access_token: accessToken, event_id: eventId }),
       })
     })
       .then((res) => res.json())
@@ -47,7 +48,7 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
       })
       .catch(() => toast.error('Failed to load tickets'))
       .finally(() => setLoading(false))
-  }, [userId])
+  }, [userId, eventId])
 
 
   return (
