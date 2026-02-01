@@ -211,8 +211,8 @@ function EventsContent() {
             email={userEmail || ""}
             userId={websiteUserId}
             onBuyNew={() => {
-              // If we have form data, go to payment, otherwise get email again
-              if (formData.email && formData.name) {
+              // Same as purchase: logged-in user goes straight to payment
+              if (websiteUserId) {
                 setStep("payment");
               } else {
                 setStep("email");

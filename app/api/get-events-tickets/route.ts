@@ -74,23 +74,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get tickets by user_id first (events website users), then by email
+    // Get tickets by user_id (tickets table: id, user_id, payment_intent_id, created_at, status, updated_at)
     let tickets: unknown[] = []
     const { data: byUserId, error: byUserIdError } = await supabase
       .from('tickets')
-      .select('*')
+      .select('id, user_id, payment_intent_id, created_at, status, updated_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
     if (!byUserIdError && byUserId?.length) {
       tickets = byUserId
-    } else if (user.email) {
-      const { data: byEmail } = await supabase
-        .from('tickets')
-        .select('*')
-        .eq('email', user.email.toLowerCase().trim())
-        .order('created_at', { ascending: false })
-      tickets = byEmail || []
     }
 
     if (byUserIdError && byUserIdError.code !== '42P01' && !byUserIdError.message?.includes('does not exist')) {

@@ -74,7 +74,7 @@ export default function EventsProfileModal({
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setTickets(data.tickets || []);
-        else toast.error(`${data.error} ====asdf` || "Failed to load tickets");
+        else toast.error(data.error || "Failed to load tickets");
       })
       .catch(() => toast.error("Failed to load tickets"))
       .finally(() => setLoading(false));

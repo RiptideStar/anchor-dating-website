@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import toast from 'react-hot-toast'
+import { createClient } from '@/lib/supabase/client'
 
 interface Ticket {
   id: string
-  email: string
-  name: string
-  phone: string
+  user_id?: string
   payment_intent_id: string
-  ticket_purchased_at: string
   created_at: string
+  status?: string | null
+  updated_at?: string | null
 }
 
 interface TicketsHistoryProps {
@@ -25,36 +25,29 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Same auth flow as purchase: use session (access_token) so API can resolve user and fetch tickets
   useEffect(() => {
-    const fetchTickets = async () => {
-      setLoading(true)
-      try {
-        const response = await fetch('/api/get-events-tickets', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userId ? { user_id: userId } : { email }),
-        })
-
-        const data = await response.json()
-
-        if (!response.ok || !data.success) {
-          toast.error(data.error || 'Failed to load tickets')
-          return
-        }
-
-        setTickets(data.tickets || [])
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'An error occurred'
-        toast.error(errorMessage)
-      } finally {
-        setLoading(false)
-      }
+    if (!userId) {
+      setLoading(false)
+      return
     }
-    
-    fetchTickets()
-  }, [email, userId])
+    const supabase = createClient()
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const accessToken = session?.access_token
+      return fetch('/api/get-events-tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, access_token: accessToken }),
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) setTickets(data.tickets || [])
+        else toast.error(data.error || 'Failed to load tickets')
+      })
+      .catch(() => toast.error('Failed to load tickets'))
+      .finally(() => setLoading(false))
+  }, [userId])
 
 
   return (
@@ -66,7 +59,7 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
       onClick={onClose}
     >
       <motion.div
-        className="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl p-8 my-8"
+        className="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl my-8 mx-4 sm:mx-6"
         initial={{ scale: 0.95, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -78,14 +71,15 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
       >
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/5 via-transparent to-blue-500/5 pointer-events-none" />
 
-        <div className="relative z-10">
+        <div className="relative z-10 p-8 sm:p-10">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-serif text-3xl text-white font-light">
               Your Tickets
             </h2>
             <button
               onClick={onClose}
-              className="text-white/70 hover:text-white transition-colors"
+              className="text-white/70 hover:text-white transition-colors p-1 -m-1"
+              type="button"
             >
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -93,9 +87,11 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
             </button>
           </div>
 
-          <p className="font-serif text-white/70 text-sm mb-6">
-            Email: <span className="text-white">{email}</span>
-          </p>
+          {(email || userId) && (
+            <p className="font-serif text-white/70 text-sm mb-8 mt-1">
+              {email ? <>Email: <span className="text-white">{email}</span></> : 'Logged in with your account'}
+            </p>
+          )}
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
@@ -117,25 +113,25 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
             </div>
           ) : (
             <>
-              <div className="space-y-4 mb-6">
+              <div className="space-y-5 mb-8">
                 {tickets.map((ticket, index) => (
                   <motion.div
                     key={ticket.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl"
+                    className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-5"
                   >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="font-serif text-white font-medium mb-1">
-                          {ticket.name || 'Ticket'}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="font-serif text-white font-medium mb-2">
+                          Ticket #{ticket.payment_intent_id?.slice(-8) || ticket.id?.slice(0, 8) || '—'}
                         </p>
-                        <p className="font-serif text-white/70 text-sm">
-                          Purchased: {new Date(ticket.ticket_purchased_at || ticket.created_at).toLocaleDateString()}
+                        <p className="font-serif text-white/70 text-sm mb-2">
+                          Purchased: {ticket.created_at ? new Date(ticket.created_at).toLocaleDateString() : '—'}
                         </p>
-                        <p className="font-serif text-white/60 text-xs mt-1">
-                          Payment ID: {ticket.payment_intent_id.slice(0, 20)}...
+                        <p className="font-serif text-emerald-400/80 text-xs">
+                          Confirmed
                         </p>
                       </div>
                     </div>
@@ -143,8 +139,9 @@ export default function TicketsHistory({ email, userId, onBuyNew, onClose }: Tic
                 ))}
               </div>
               <motion.button
+                type="button"
                 onClick={onBuyNew}
-                className="w-full rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-6 py-3 font-serif text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40"
+                className="w-full rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-6 py-4 font-serif text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40 mt-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
