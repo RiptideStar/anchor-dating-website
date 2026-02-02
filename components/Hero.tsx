@@ -71,14 +71,11 @@ export default function Hero({ onGetStarted }: HeroProps) {
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
             <motion.button
               onClick={onGetStarted}
-              className="group relative w-full overflow-hidden rounded-2xl border border-white/30 bg-gradient-to-br from-white/20 via-white/15 to-white/10 px-10 py-5 font-serif text-xl font-semibold text-white backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 hover:border-white/50 hover:from-white/30 hover:via-white/25 hover:to-white/15 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] md:w-auto md:px-12 md:py-6"
+              className="group relative w-full overflow-hidden rounded-2xl border border-white/30 bg-gradient-to-br from-white/20 via-white/15 to-white/10 px-6 py-3 font-serif text-xl font-semibold text-white backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 hover:border-white/50 hover:from-white/30 hover:via-white/25 hover:to-white/15 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] md:w-auto md:px-8 md:py-4"
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span
-                className="relative z-10 flex items-center justify-center gap-2  rounded-full  "
-                style={{ padding: "10px" }}
-              >
+              <span className="relative z-10 flex items-center justify-center gap-2  rounded-full  ">
                 Join Waitlist
                 <svg
                   className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
@@ -98,14 +95,11 @@ export default function Hero({ onGetStarted }: HeroProps) {
             </motion.button>
             <motion.button
               onClick={handleEventsClick}
-              className="group relative w-full overflow-hidden rounded-2xl border border-white/30 bg-gradient-to-br from-pink-500/30 via-purple-500/30 to-blue-500/30 px-10 py-5 font-serif text-xl font-semibold text-white backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 hover:border-white/50 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] md:w-auto md:px-12 md:py-6"
+              className="group relative w-full overflow-hidden rounded-2xl border border-white/30 bg-gradient-to-br from-pink-500/30 via-purple-500/30 to-blue-500/30 px-6 py-3 font-serif text-xl font-semibold text-white backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-all duration-300 hover:border-white/50 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4)] md:w-auto md:px-8 md:py-4"
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span
-                className="relative z-10 flex items-center justify-center gap-2  rounded-full  "
-                style={{ padding: "10px" }}
-              >
+              <span className="relative z-10 flex items-center justify-center gap-2  rounded-full  ">
                 Events
                 <svg
                   className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
