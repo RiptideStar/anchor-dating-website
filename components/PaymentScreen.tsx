@@ -18,7 +18,7 @@ if (!stripeKey) {
   console.warn("Stripe publishable key is not set!");
 } else if (stripeKey.startsWith("pk_live_")) {
   console.warn(
-    "⚠️ WARNING: Using LIVE Stripe key in development! Use test keys (pk_test_) instead."
+    "⚠️ WARNING: Using LIVE Stripe key in development! Use test keys (pk_test_) instead.",
   );
 }
 
@@ -28,15 +28,23 @@ interface PaymentScreenProps {
   formData: FormData;
   userId?: string;
   eventId?: string;
+  price?: number;
   onSuccess: (paymentIntentId: string) => void;
   onBack: () => void;
 }
 
-function CheckoutForm({ formData, userId, eventId, onSuccess, onBack }: PaymentScreenProps) {
+function CheckoutForm({
+  formData,
+  userId,
+  eventId,
+  price,
+  onSuccess,
+  onBack,
+}: PaymentScreenProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
-  const ticketPrice = process.env.NEXT_PUBLIC_TICKET_PRICE || "29.99";
+  const ticketPrice = price || 29.99;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,7 +84,7 @@ function CheckoutForm({ formData, userId, eventId, onSuccess, onBack }: PaymentS
           setIsProcessing(false);
           return;
         }
-        
+
         await fetch("/api/save-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -246,12 +254,13 @@ export default function PaymentScreen({
   formData,
   userId,
   eventId,
+  price,
   onSuccess,
   onBack,
 }: PaymentScreenProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const ticketPrice = process.env.NEXT_PUBLIC_TICKET_PRICE || "29.99";
+  const ticketPrice = price || 29.99;
 
   // Create payment intent when component mounts
   useEffect(() => {
@@ -261,7 +270,7 @@ export default function PaymentScreen({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: Math.round(parseFloat(ticketPrice) * 100),
+            amount: Math.round(ticketPrice * 100),
             formData,
           }),
         });

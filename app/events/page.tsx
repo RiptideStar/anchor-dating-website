@@ -234,6 +234,7 @@ function EventsContent() {
             formData={formData}
             userId={websiteUserId || userId}
             eventId={selectedEvent?.id}
+            price={selectedEvent?.price}
             onSuccess={handlePaymentSuccess}
             onBack={() => {
               if (selectedEvent) {

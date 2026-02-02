@@ -82,7 +82,7 @@ export default function AdminScanPage() {
       }
 
       if (!userData?.is_admin) {
-        setError("Access Denied: You do not have administrator privileges.");
+        setError("Access Denied");
         setLoading(false);
         return;
       }
