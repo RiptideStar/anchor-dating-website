@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { User } from "@supabase/supabase-js";
 import Link from "next/link";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 interface Ticket {
   id: string;
@@ -231,7 +231,6 @@ export default function AdminScanPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 px-4 py-8 text-white">
-      <Toaster position="bottom-center" />
       <div className="mx-auto max-w-md">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="font-serif text-2xl font-light">Admin Scan</h1>
