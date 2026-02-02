@@ -64,13 +64,13 @@ export default function EventsList({
               />
             )}
             <div className="px-8 py-8 md:px-10 md:py-10">
-              <h3 className="font-serif text-4xl md:text-5xl text-white font-light mb-6 leading-tight">
+              <h3 className="font-serif text-4xl md:text-5xl text-white font-light  leading-tight">
                 {event.title}
               </h3>
-              <p className="font-serif text-white/80 text-lg md:text-xl mb-12 line-clamp-3 leading-relaxed">
+              <p className="font-serif text-white/80 text-lg md:text-xl mb-4 line-clamp-3 leading-relaxed">
                 {event.description}
               </p>
-              <div className="flex items-center justify-between pt-10 border-t border-white/20">
+              <div className="flex items-center justify-between pt-2 border-t border-white/20">
                 <span className="font-serif text-white text-2xl md:text-3xl font-medium">
                   ${event.price.toFixed(2)}
                 </span>
