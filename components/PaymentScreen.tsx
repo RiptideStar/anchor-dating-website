@@ -45,6 +45,7 @@ function CheckoutForm({
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const ticketPrice = price || 29.99;
+  console.log("Ticket price:", ticketPrice, eventId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -261,7 +262,7 @@ export default function PaymentScreen({
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const ticketPrice = price || 29.99;
-
+  console.log("Ticket price:", ticketPrice);
   // Create payment intent when component mounts
   useEffect(() => {
     const createPaymentIntent = async () => {
@@ -445,6 +446,7 @@ export default function PaymentScreen({
                   eventId={eventId}
                   onSuccess={onSuccess}
                   onBack={onBack}
+                  price={ticketPrice}
                 />
               </Elements>
             ) : (
