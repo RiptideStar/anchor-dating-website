@@ -98,7 +98,22 @@ export default function AdminScanPage() {
         .single();
 
       if (error) throw error;
+      const { data: ticketData, error: ticketError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", data.user_id)
+        .single();
 
+      if (ticketError) throw ticketError;
+
+      const { data: eventData, error: eventError } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", data.event_id)
+        .single();
+      if (eventError) throw eventError;
+
+      console.log(eventData, "ticketData");
       setTicket(data);
     } catch (err) {
       console.error("Fetch ticket failed:", err);
