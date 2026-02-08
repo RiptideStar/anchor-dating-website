@@ -18,7 +18,7 @@ if (!stripeKey) {
   console.warn("Stripe publishable key is not set!");
 } else if (stripeKey.startsWith("pk_live_")) {
   console.warn(
-    "⚠️ WARNING: Using LIVE Stripe key in development! Use test keys (pk_test_) instead."
+    "⚠️ WARNING: Using LIVE Stripe key in development! Use test keys (pk_test_) instead.",
   );
 }
 
@@ -27,15 +27,25 @@ const stripePromise = loadStripe(stripeKey);
 interface PaymentScreenProps {
   formData: FormData;
   userId?: string;
+  eventId?: string;
+  price?: number;
   onSuccess: (paymentIntentId: string) => void;
   onBack: () => void;
 }
 
-function CheckoutForm({ formData, userId, onSuccess, onBack }: PaymentScreenProps) {
+function CheckoutForm({
+  formData,
+  userId,
+  eventId,
+  price,
+  onSuccess,
+  onBack,
+}: PaymentScreenProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
-  const ticketPrice = process.env.NEXT_PUBLIC_TICKET_PRICE || "29.99";
+  const ticketPrice = price || 29.99;
+  console.log("Ticket price:", ticketPrice, eventId);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,13 +85,14 @@ function CheckoutForm({ formData, userId, onSuccess, onBack }: PaymentScreenProp
           setIsProcessing(false);
           return;
         }
-        
+
         await fetch("/api/save-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             userId: userId,
             paymentIntentId: paymentIntent.id,
+            event_id: eventId,
           }),
         });
 
@@ -243,13 +254,15 @@ function CheckoutForm({ formData, userId, onSuccess, onBack }: PaymentScreenProp
 export default function PaymentScreen({
   formData,
   userId,
+  eventId,
+  price,
   onSuccess,
   onBack,
 }: PaymentScreenProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const ticketPrice = process.env.NEXT_PUBLIC_TICKET_PRICE || "29.99";
-
+  const ticketPrice = price || 29.99;
+  console.log("Ticket price:", ticketPrice);
   // Create payment intent when component mounts
   useEffect(() => {
     const createPaymentIntent = async () => {
@@ -258,7 +271,7 @@ export default function PaymentScreen({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: Math.round(parseFloat(ticketPrice) * 100),
+            amount: Math.round(ticketPrice * 100),
             formData,
           }),
         });
@@ -430,8 +443,10 @@ export default function PaymentScreen({
                 <CheckoutForm
                   formData={formData}
                   userId={userId}
+                  eventId={eventId}
                   onSuccess={onSuccess}
                   onBack={onBack}
+                  price={ticketPrice}
                 />
               </Elements>
             ) : (

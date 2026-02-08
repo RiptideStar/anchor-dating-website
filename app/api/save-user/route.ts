@@ -14,25 +14,25 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = createClient(supabaseUrl, supabaseKey)
-    
-    const { userId, paymentIntentId } = await request.json()
-console.log('userId=====', userId)
-console.log('paymentIntentId', paymentIntentId)
-    if (!userId || !paymentIntentId) {
+
+    const { userId, paymentIntentId, event_id: eventId } = await request.json()
+    if (!paymentIntentId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    // Create a NEW ticket entry in the tickets table
-    // This allows multiple tickets per user
-    // Tickets table only has: id, user_id, payment_intent_id, created_at
-    const ticketData = {
-      user_id: userId,
+    // Tickets table: id, user_id, payment_intent_id, event_id, created_at, status, updated_at
+    const ticketData: Record<string, unknown> = {
       payment_intent_id: paymentIntentId,
-      created_at: new Date().toISOString(),
-    };
+    }
+    if (userId) {
+      ticketData.user_id = userId
+    }
+    if (eventId) {
+      ticketData.event_id = eventId
+    }
 
     const { data, error } = await supabase
       .from('tickets')
@@ -41,40 +41,37 @@ console.log('paymentIntentId', paymentIntentId)
 
     if (error) {
       console.error('Supabase error:', error)
-      
+
       // If error is unique constraint on payment_intent_id (shouldn't happen, but handle it)
       if (error.code === '23505' || error.message?.includes('unique') || error.message?.includes('duplicate')) {
         return NextResponse.json(
-          { 
+          {
             error: 'This payment has already been processed.',
             code: error.code,
           },
           { status: 400 }
         )
       }
-      
+
       return NextResponse.json(
         { error: 'Failed to save ticket', details: error.message },
         { status: 500 }
       )
     }
 
-    // Update has_ticket status in waitlist table
-    if (data && data[0]) {
+    // Update has_ticket in waitlist only when user is from waitlist (optional – don't fail for events/users table)
+    if (data && data[0] && userId) {
       const { error: updateError } = await supabase
         .from("waitlist")
         .update({ has_ticket: true })
         .eq("id", userId);
 
       if (updateError) {
-        // If has_ticket column doesn't exist, log warning but don't fail
         if (updateError.message?.includes("has_ticket") || updateError.message?.includes("column")) {
-          console.warn("has_ticket column not found in waitlist table. Please run migration.");
-        } else {
-          console.error("Failed to update has_ticket status:", updateError);
+          console.warn("has_ticket column not found in waitlist table.");
+        } else if (updateError.code !== "PGRST116") {
+          console.warn("Waitlist update skipped (user may be from users table):", updateError.message);
         }
-      } else {
-        console.log("Updated has_ticket to true for user:", userId);
       }
     }
 
