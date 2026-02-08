@@ -61,6 +61,8 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    // Default: return ALL events for everyone (simple users and admins). Anyone can browse and buy tickets.
+    // Only when ?mine=1 and user is admin: return just that admin's own events (for "My events" screen).
     const mine = request.nextUrl.searchParams.get('mine') === '1'
     let query = supabase.from('events').select('*').order('date', { ascending: true })
     if (mine && isAdmin && user) {
@@ -104,7 +106,7 @@ export async function POST(request: NextRequest) {
     if (!authUserId && !profileId) {
       return NextResponse.json({ error: 'Unauthorized. Log in to add events.' }, { status: 401 })
     }
-
+    
     const supabase = getSupabase(true)
     if (!supabase) {
       return NextResponse.json(

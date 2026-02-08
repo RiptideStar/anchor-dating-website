@@ -59,7 +59,10 @@ function EventsContent() {
       } = await supabase.auth.getSession();
 
       if (!session) {
-        const storedUserId = typeof window !== "undefined" ? localStorage.getItem("anchor_events_websiteUserId") : null;
+        const storedUserId =
+          typeof window !== "undefined"
+            ? localStorage.getItem("anchor_events_websiteUserId")
+            : null;
         if (storedUserId) {
           setWebsiteUserId(storedUserId);
           setUserName(localStorage.getItem("anchor_events_userName") || "");
@@ -68,7 +71,8 @@ function EventsContent() {
           setFormData((prev) => ({
             ...prev,
             name: localStorage.getItem("anchor_events_userName") || prev.name,
-            email: localStorage.getItem("anchor_events_userEmail") || prev.email,
+            email:
+              localStorage.getItem("anchor_events_userEmail") || prev.email,
           }));
         } else {
           setWebsiteUserId("");
@@ -79,7 +83,13 @@ function EventsContent() {
         return;
       }
 
-      let userData: { id: string; first_name: string | null; last_name: string | null; email: string | null; is_admin: boolean } | null = null;
+      let userData: {
+        id: string;
+        first_name: string | null;
+        last_name: string | null;
+        email: string | null;
+        is_admin: boolean;
+      } | null = null;
 
       const { data: dataByAuthId } = await supabase
         .from("users")
@@ -99,7 +109,11 @@ function EventsContent() {
       }
 
       if (userData) {
-        const name = [userData.first_name, userData.last_name].filter(Boolean).join(" ").trim() || "";
+        const name =
+          [userData.first_name, userData.last_name]
+            .filter(Boolean)
+            .join(" ")
+            .trim() || "";
         setWebsiteUserId(userData.id);
         setUserName(name);
         setUserEmail(userData.email ?? "");
@@ -113,7 +127,10 @@ function EventsContent() {
           localStorage.setItem("anchor_events_websiteUserId", userData.id);
           localStorage.setItem("anchor_events_userName", name);
           localStorage.setItem("anchor_events_userEmail", userData.email ?? "");
-          localStorage.setItem("anchor_events_isAdmin", String(userData.is_admin));
+          localStorage.setItem(
+            "anchor_events_isAdmin",
+            String(userData.is_admin),
+          );
           localStorage.setItem("anchor_events_authUserId", session.user.id);
         }
       } else {
@@ -137,6 +154,7 @@ function EventsContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchEvents uses state
   }, [websiteUserId, eventsView]);
 
+  // mine=true: only for admin "My events" tab. mine=false: all events for everyone (simple users can see and buy tickets for any event).
   const fetchEvents = async (mine = false) => {
     setLoading(true);
     try {
@@ -167,14 +185,26 @@ function EventsContent() {
             email: data.user.email ?? prev.email,
           }));
           if (typeof window !== "undefined") {
-            localStorage.setItem("anchor_events_userName", data.user.name ?? "");
-            localStorage.setItem("anchor_events_userEmail", data.user.email ?? "");
-            localStorage.setItem("anchor_events_isAdmin", String(data.user.is_admin));
+            localStorage.setItem(
+              "anchor_events_userName",
+              data.user.name ?? "",
+            );
+            localStorage.setItem(
+              "anchor_events_userEmail",
+              data.user.email ?? "",
+            );
+            localStorage.setItem(
+              "anchor_events_isAdmin",
+              String(data.user.is_admin),
+            );
           }
         } else if (data.is_admin !== undefined) {
           setIsAdmin(data.is_admin);
           if (typeof window !== "undefined") {
-            localStorage.setItem("anchor_events_isAdmin", String(data.is_admin));
+            localStorage.setItem(
+              "anchor_events_isAdmin",
+              String(data.is_admin),
+            );
           }
         }
       } else {
@@ -298,7 +328,10 @@ function EventsContent() {
     if (!confirm("Delete this event? This cannot be undone.")) return;
     try {
       const headers: HeadersInit = { "X-User-Id": websiteUserId };
-      const authUid = typeof window !== "undefined" ? localStorage.getItem("anchor_events_authUserId") : null;
+      const authUid =
+        typeof window !== "undefined"
+          ? localStorage.getItem("anchor_events_authUserId")
+          : null;
       if (authUid) headers["X-Auth-User-Id"] = authUid;
       const res = await fetch(`/api/events/${ev.id}`, {
         method: "DELETE",
@@ -449,7 +482,13 @@ function EventsContent() {
           userName={userName || formData.name}
           userId={websiteUserId}
           onLoginSuccess={(identifier, id, name, isAdmin, authUserId) => {
-            handleProfileLoginSuccess(identifier, id, name, isAdmin, authUserId);
+            handleProfileLoginSuccess(
+              identifier,
+              id,
+              name,
+              isAdmin,
+              authUserId,
+            );
             checkSupabaseAuth();
             const pending = localStorage.getItem("anchor_events_pendingAction");
             if (pending === "purchase") {
@@ -571,31 +610,31 @@ function EventsListPage({
         </div>
 
         {isAdmin && (
-            <div className="flex gap-2 mb-8">
-              <button
-                type="button"
-                onClick={() => onSwitchView("all")}
-                className={`rounded-full px-5 py-2.5 font-serif text-sm transition-colors ${
-                  eventsView === "all"
-                    ? "bg-white/20 text-white border border-white/30"
-                    : "bg-white/5 text-white/70 border border-white/10 hover:bg-white/10"
-                }`}
-              >
-                All events
-              </button>
-              <button
-                type="button"
-                onClick={() => onSwitchView("my")}
-                className={`rounded-full px-5 py-2.5 font-serif text-sm transition-colors ${
-                  eventsView === "my"
-                    ? "bg-white/20 text-white border border-white/30"
-                    : "bg-white/5 text-white/70 border border-white/10 hover:bg-white/10"
-                }`}
-              >
-                My events
-              </button>
-            </div>
-          )}
+          <div className="flex gap-2 mb-8">
+            <button
+              type="button"
+              onClick={() => onSwitchView("all")}
+              className={`rounded-full px-5 py-2.5 font-serif text-sm transition-colors ${
+                eventsView === "all"
+                  ? "bg-white/20 text-white border border-white/30"
+                  : "bg-white/5 text-white/70 border border-white/10 hover:bg-white/10"
+              }`}
+            >
+              All events
+            </button>
+            <button
+              type="button"
+              onClick={() => onSwitchView("my")}
+              className={`rounded-full px-5 py-2.5 font-serif text-sm transition-colors ${
+                eventsView === "my"
+                  ? "bg-white/20 text-white border border-white/30"
+                  : "bg-white/5 text-white/70 border border-white/10 hover:bg-white/10"
+              }`}
+            >
+              My events
+            </button>
+          </div>
+        )}
 
         <motion.h1
           initial={{ opacity: 0, y: -20 }}

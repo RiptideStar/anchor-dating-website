@@ -49,7 +49,8 @@ export default function LandingPage({ onJoinWaitlist }: LandingPageProps) {
             className="font-serif text-4xl md:text-5xl lg:text-6xl font-normal leading-tight text-black"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transitio
+            n={{ duration: 0.8, delay: 0.3 }}
           >
             We're Bringing <span className="font-bold underline">dates</span>{" "}
             back to <span className="italic">dating</span>.
