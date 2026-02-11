@@ -427,7 +427,7 @@ export default function Page() {
           Events
         </Link>
       </header>
-    <div ref={containerRef} className="relative" style={{ height: "1620vh" }}>
+    <div ref={containerRef} className="relative" style={{ height: "700vh" }}>
       <div className="sticky top-0 w-full h-screen pt-16 sm:pt-20 lg:pt-12 px-3 sm:px-6 lg:px-14 flex items-center">
         <div className="flex flex-col-reverse lg:flex-row w-full max-w-350 mx-auto gap-16 lg:gap-0 items-center">
           {/* ===== LEFT SECTION ===== */}
