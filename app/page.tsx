@@ -360,12 +360,12 @@ export default function Page() {
   // ============ SCREEN 6 → 7 TRANSITION ============
   const antonyS7TranslateX = useTransform(
     scrollYProgress,
-    [0.594, 0.641, 0.683, 0.723],
+    [0.594, 0.641, 0.693, 0.733],
     ["100%", "0%", "0%", "-100%"],
   );
   const antonyS7Opacity = useTransform(
     scrollYProgress,
-    [0.594, 0.641, 0.683, 0.723],
+    [0.594, 0.641, 0.693, 0.733],
     [0, 1, 1, 0],
   );
   const text7Opacity = useTransform(scrollYProgress, [0.594, 0.641], [0, 1]);
@@ -378,32 +378,32 @@ export default function Page() {
   // ============ SCREEN 7 → 8 TRANSITION ============
   const antonyS8TranslateX = useTransform(
     scrollYProgress,
-    [0.713, 0.773, 0.793, 0.833],
+    [0.723, 0.783, 0.823, 0.863],
     ["100%", "0%", "0%", "-100%"],
   );
   const antonyS8Opacity = useTransform(
     scrollYProgress,
-    [0.713, 0.773, 0.793, 0.833],
+    [0.723, 0.783, 0.823, 0.863],
     [0, 1, 1, 0],
   );
-  const text8Opacity = useTransform(scrollYProgress, [0.713, 0.773], [0, 1]);
+  const text8Opacity = useTransform(scrollYProgress, [0.723, 0.783], [0, 1]);
   const text8TranslateX = useTransform(
     scrollYProgress,
-    [0.713, 0.773],
+    [0.723, 0.783],
     [-50, 0],
   );
 
   // ============ SCREEN 8 → 9 TRANSITION ============
   const antonyS9TranslateX = useTransform(
     scrollYProgress,
-    [0.823, 0.89],
+    [0.853, 0.97],
     ["100%", "0%"],
   );
-  const antonyS9Opacity = useTransform(scrollYProgress, [0.823, 0.89], [0, 1]);
-  const text9Opacity = useTransform(scrollYProgress, [0.823, 0.89], [0, 1]);
+  const antonyS9Opacity = useTransform(scrollYProgress, [0.853, 0.97], [0, 1]);
+  const text9Opacity = useTransform(scrollYProgress, [0.853, 0.97], [0, 1]);
   const text9TranslateX = useTransform(
     scrollYProgress,
-    [0.823, 0.89],
+    [0.853, 0.97],
     [-50, 0],
   );
 
@@ -427,7 +427,7 @@ export default function Page() {
           Events
         </Link>
       </header>
-    <div ref={containerRef} className="relative" style={{ height: "700vh" }}>
+    <div ref={containerRef} className="relative" style={{ height: "1620vh" }}>
       <div className="sticky top-0 w-full h-screen pt-16 sm:pt-20 lg:pt-12 px-3 sm:px-6 lg:px-14 flex items-center">
         <div className="flex flex-col-reverse lg:flex-row w-full max-w-350 mx-auto gap-16 lg:gap-0 items-center">
           {/* ===== LEFT SECTION ===== */}
