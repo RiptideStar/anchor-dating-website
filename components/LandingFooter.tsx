@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { AppStoreBadge } from "@/app/landing/page";
+import AppStoreBadge from "./landing/AppstoreBadge";
 
 export interface LandingWaitlistInputProps {
   placeholder?: string;

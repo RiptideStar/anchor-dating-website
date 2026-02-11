@@ -8,26 +8,7 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import Link from "next/link";
-
-// move to env
-const appstoreLink =
-  "https://apps.apple.com/us/app/anchor-dating-first/id6757112248";
-
-// ─── Reusable components ────────────────────────────────────────
-
-export function AppStoreBadge() {
-  return (
-    <Link href={appstoreLink} className="inline-block" target="_blank">
-      <Image
-        src="/Download_on_the_App_Store_Badge.png"
-        alt="App Store Badge"
-        width={200}
-        height={200}
-      />
-    </Link>
-  );
-}
+import AppStoreBadge from "@/components/landing/AppstoreBadge";
 
 function TextBubble({ children }: { children: string }) {
   return (
@@ -441,7 +422,10 @@ export default function Page() {
                 <div className="mt-6 lg:mt-8 relative h-14">
                   <motion.div
                     className="absolute top-0 left-0"
-                    style={{ opacity: badgeOpacity, visibility: badgeVisibility }}
+                    style={{
+                      opacity: badgeOpacity,
+                      visibility: badgeVisibility,
+                    }}
                   >
                     <AppStoreBadge />
                   </motion.div>
