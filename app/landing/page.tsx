@@ -8,7 +8,6 @@ import {
   useTransform,
   type MotionValue,
 } from "framer-motion";
-import { LandingWaitlistInput } from "@/components/LandingFooter";
 import Link from "next/link";
 
 // move to env
@@ -17,7 +16,7 @@ const appstoreLink =
 
 // ─── Reusable components ────────────────────────────────────────
 
-function AppStoreBadge() {
+export function AppStoreBadge() {
   return (
     <Link href={appstoreLink} className="inline-block" target="_blank">
       <Image
@@ -144,7 +143,7 @@ function PortraitImage({
 
 // ─── Main page component ────────────────────────────────────────
 
-export default function LandingPage() {
+export default function Page() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -157,10 +156,9 @@ export default function LandingPage() {
 
   // ===================== SCREEN 1 =====================
   const phoneOpacity = useTransform(s1, [0, 0.4], [1, 0]);
-  const badgeOpacity = useTransform(s1, [0.05, 0.3], [1, 0]);
-  const inputOpacity = useTransform(s1, [0.3, 0.55], [0, 1]);
-  const inputPointerEvents = useTransform(inputOpacity, (v) =>
-    v > 0.1 ? "auto" : "none",
+  const badgeOpacity = useTransform(scrollYProgress, [0.128, 0.144], [1, 0]);
+  const badgeVisibility = useTransform(badgeOpacity, (v) =>
+    v > 0.01 ? "visible" : "hidden",
   );
 
   const clubTop = useTransform(s1, [0, 0.7], ["17%", "-17%"]);
@@ -443,18 +441,9 @@ export default function LandingPage() {
                 <div className="mt-6 lg:mt-8 relative h-14">
                   <motion.div
                     className="absolute top-0 left-0"
-                    style={{ opacity: badgeOpacity }}
+                    style={{ opacity: badgeOpacity, visibility: badgeVisibility }}
                   >
                     <AppStoreBadge />
-                  </motion.div>
-                  <motion.div
-                    className="absolute top-0 left-0 w-full max-w-md"
-                    style={{
-                      opacity: inputOpacity,
-                      pointerEvents: inputPointerEvents,
-                    }}
-                  >
-                    <LandingWaitlistInput />
                   </motion.div>
                 </div>
               </motion.div>
