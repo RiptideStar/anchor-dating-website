@@ -157,6 +157,33 @@ const LandingFooter: React.FC = () => {
           <AppStoreBadge />
         </div>
       </div>
+
+      {/* Bottom bar – sits inside the footer section, overlapping the graphic */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-6 sm:px-8 py-5">
+        <p className="text-xs text-neutral-400">© 2026 Anchor Dating</p>
+        <div className="flex items-center gap-5 text-sm text-neutral-500">
+          <a
+            href="/privacy"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            Privacy
+          </a>
+          <a
+            href="mailto:kyle100@wharton.upenn.edu"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            Contact
+          </a>
+          <a
+            href="https://instagram.com/anchor.dating"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            Instagram
+          </a>
+        </div>
+      </div>
     </footer>
   );
 };

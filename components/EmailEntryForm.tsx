@@ -53,7 +53,6 @@ export default function EmailEntryForm({
       toast.success(
         data.isNewUser ? "Welcome! Account created." : "Welcome back!",
       );
-      // Pass user data including name and phone
       onSuccess(data.user.email, data.user.id, data.user.name || name, phone, data.user.is_admin);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "An error occurred";
@@ -65,110 +64,101 @@ export default function EmailEntryForm({
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/30 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onCancel}
     >
       <motion.div
-        className="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl p-8"
-        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        className="relative w-full max-w-md bg-white rounded-2xl p-6 sm:p-8 font-dm-sans"
+        initial={{ scale: 0.96, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        exit={{ scale: 0.96, opacity: 0, y: 20 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          boxShadow:
-            "0 25px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-          background:
-            "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)",
         }}
       >
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/5 via-transparent to-blue-500/5 pointer-events-none" />
-
-        <div className="relative z-10" style={{ padding: "20px" }}>
-          <h2 className="mb-6 font-serif text-3xl text-white font-light text-center">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h2 className="font-playfair text-2xl sm:text-3xl font-bold text-[#1A1A1A] mb-2">
             {title}
           </h2>
-          <p className="mb-6 font-serif text-white/70 text-sm text-center">
+          <p className="text-[#9E9891] text-sm">
             Enter your email to continue
           </p>
-
-          <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
-            <div style={{ margin: "20px" }}>
-              <label
-                htmlFor="email"
-                className="block mb-3 md:mb-4 font-serif text-white/80 text-sm"
-              >
-                Email *
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 font-serif text-white placeholder-white/50 backdrop-blur-xl focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div style={{ margin: "20px" }}>
-              <label
-                htmlFor="name"
-                className="block mb-3 md:mb-4 font-serif text-white/80 text-sm"
-              >
-                Name (Optional)
-              </label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 font-serif text-white placeholder-white/50 backdrop-blur-xl focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Enter your name"
-              />
-            </div>
-
-            <div style={{ margin: "20px" }}>
-              <label
-                htmlFor="phone"
-                className="block mb-3 md:mb-4 font-serif text-white/80 text-sm"
-              >
-                Phone Number (Optional)
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 font-serif text-white placeholder-white/50 backdrop-blur-xl focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="+1 (555) 123-4567"
-              />
-            </div>
-
-            <div className="flex gap-3 mt-6" style={{ margin: "20px" }}>
-              <motion.button
-                type="button"
-                onClick={onCancel}
-                className="flex-1 rounded-xl border border-white/20 bg-white/10 px-4 py-3 font-serif text-white backdrop-blur-xl transition-all hover:border-white/40 hover:bg-white/20"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Cancel
-              </motion.button>
-              <motion.button
-                type="submit"
-                disabled={loading}
-                className="flex-1 rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-4 py-3 font-serif text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: loading ? 1 : 1.02 }}
-                whileTap={{ scale: loading ? 1 : 0.98 }}
-              >
-                {loading ? "Processing..." : "Continue"}
-              </motion.button>
-            </div>
-          </form>
         </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email */}
+          <div>
+            <label htmlFor="email" className="block mb-2 text-sm font-medium text-[#1A1A1A]">
+              Email <span className="text-[#D4654A]">*</span>
+            </label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full rounded-xl border border-[#E8E3DC] bg-white px-4 py-3 text-[#1A1A1A] text-sm placeholder-[#9E9891] focus:border-[#D4654A] focus:outline-none focus:ring-2 focus:ring-[#D4654A]/20 transition-all"
+              placeholder="Enter your email"
+            />
+          </div>
+
+          {/* Name */}
+          <div>
+            <label htmlFor="name" className="block mb-2 text-sm font-medium text-[#1A1A1A]">
+              Name <span className="text-[#9E9891] font-normal">(Optional)</span>
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full rounded-xl border border-[#E8E3DC] bg-white px-4 py-3 text-[#1A1A1A] text-sm placeholder-[#9E9891] focus:border-[#D4654A] focus:outline-none focus:ring-2 focus:ring-[#D4654A]/20 transition-all"
+              placeholder="Enter your name"
+            />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label htmlFor="phone" className="block mb-2 text-sm font-medium text-[#1A1A1A]">
+              Phone Number <span className="text-[#9E9891] font-normal">(Optional)</span>
+            </label>
+            <input
+              id="phone"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full rounded-xl border border-[#E8E3DC] bg-white px-4 py-3 text-[#1A1A1A] text-sm placeholder-[#9E9891] focus:border-[#D4654A] focus:outline-none focus:ring-2 focus:ring-[#D4654A]/20 transition-all"
+              placeholder="+1 (555) 123-4567"
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-3 pt-2">
+            <motion.button
+              type="button"
+              onClick={onCancel}
+              className="flex-1 rounded-full border border-[#E8E3DC] bg-[#F3EFE8] px-4 py-3 text-sm font-semibold text-[#6B6560] hover:bg-[#E8E3DC] hover:text-[#1A1A1A] transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Cancel
+            </motion.button>
+            <motion.button
+              type="submit"
+              disabled={loading}
+              className="flex-1 rounded-full bg-[#1A1A1A] px-4 py-3 text-sm font-semibold text-white hover:opacity-85 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              whileHover={{ scale: loading ? 1 : 1.02 }}
+              whileTap={{ scale: loading ? 1 : 0.98 }}
+            >
+              {loading ? "Processing..." : "Continue"}
+            </motion.button>
+          </div>
+        </form>
       </motion.div>
     </motion.div>
   );

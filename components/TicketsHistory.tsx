@@ -39,7 +39,6 @@ export default function TicketsHistory({
     return `${origin}/admin/scan/${paymentIntentId}`;
   }, []);
 
-  // Same auth flow as purchase: use session (access_token) so API can resolve user and fetch tickets
   useEffect(() => {
     if (!userId) return;
     const supabase = createClient();
@@ -68,58 +67,44 @@ export default function TicketsHistory({
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/30 backdrop-blur-sm overflow-y-auto"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl my-8 mx-4 sm:mx-6 overflow-hidden"
-        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        className="relative w-full max-w-2xl bg-white rounded-2xl my-8 mx-4 sm:mx-6 overflow-hidden font-dm-sans"
+        initial={{ scale: 0.96, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        exit={{ scale: 0.96, opacity: 0, y: 20 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          boxShadow:
-            "0 25px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-          background:
-            "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)",
         }}
       >
-        <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/5 via-transparent to-blue-500/5 pointer-events-none" />
-
-        <div className="relative z-10 box-border px-8 py-8 sm:px-12 sm:py-10 md:px-14 md:py-12">
+        <div className="px-6 sm:px-8 py-6 sm:py-8">
+          {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-serif text-3xl text-white font-light">
+            <h2 className="font-playfair text-2xl sm:text-3xl font-bold text-[#1A1A1A]">
               Your Tickets
             </h2>
             <button
               onClick={onClose}
-              className="text-white/70 hover:text-white transition-colors p-1 -m-1"
+              className="text-[#9E9891] hover:text-[#1A1A1A] transition-colors p-1 -m-1 rounded-full hover:bg-[#F3EFE8]"
               type="button"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {(email || userId) && (
-            <p className="font-serif text-white/70 text-sm mb-8 mt-1">
+            <p className="text-[#9E9891] text-sm mb-6">
               {email && (
                 <>
-                  Email: <span className="text-white">{email}</span>
+                  Email: <span className="text-[#1A1A1A] font-medium">{email}</span>
                 </>
               )}
             </p>
@@ -127,16 +112,16 @@ export default function TicketsHistory({
 
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
+              <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#E8E3DC] border-t-[#D4654A]"></div>
             </div>
           ) : tickets.length === 0 ? (
             <div className="text-center py-12">
-              <p className="font-serif text-white/70 text-lg mb-4">
+              <p className="text-[#9E9891] mb-6">
                 No tickets found
               </p>
               <motion.button
                 onClick={onBuyNew}
-                className="rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-6 py-3 font-serif text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40"
+                className="rounded-full bg-[#1A1A1A] px-8 py-3.5 text-sm font-semibold text-white hover:opacity-85 transition-all"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -158,50 +143,33 @@ export default function TicketsHistory({
                     <button
                       type="button"
                       onClick={() => setSelectedTicket(null)}
-                      className="flex items-center gap-2 text-white/70 hover:text-white text-sm font-serif"
+                      className="flex items-center gap-2 text-[#6B6560] hover:text-[#1A1A1A] text-sm font-medium transition-colors"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                       Back to tickets
                     </button>
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-                      <p className="font-serif text-white/80 text-sm mb-1">
-                        Status
-                      </p>
-                      <p className="font-serif text-emerald-400 font-medium mb-4">
-                        Confirmed
-                      </p>
+                    <div className="rounded-2xl border border-[#E8E3DC] bg-white p-6 text-center">
+                      <p className="text-[#9E9891] text-sm mb-1">Status</p>
+                      <p className="text-emerald-600 font-semibold mb-5">Confirmed</p>
                       {selectedTicket.payment_intent_id && (
-                        <div className="inline-flex p-4 bg-white rounded-xl">
+                        <div className="inline-flex p-4 bg-white rounded-xl border border-[#E8E3DC]">
                           <QRCodeSVG
-                            value={generateQRData(
-                              selectedTicket.payment_intent_id,
-                            )}
+                            value={generateQRData(selectedTicket.payment_intent_id)}
                             size={200}
                             level="M"
+                            fgColor="#1A1A1A"
+                            bgColor="#ffffff"
                           />
                         </div>
                       )}
-                      <p className="font-serif text-white/60 text-xs mt-4">
-                        Ticket #
-                        {selectedTicket.payment_intent_id?.slice(-8) || "—"}
+                      <p className="text-[#6B6560] text-xs mt-4 font-medium">
+                        Ticket #{selectedTicket.payment_intent_id?.slice(-8) || "—"}
                       </p>
-                      <p className="font-serif text-white/50 text-xs mt-1">
+                      <p className="text-[#9E9891] text-xs mt-1">
                         {selectedTicket.created_at
-                          ? new Date(
-                              selectedTicket.created_at,
-                            ).toLocaleDateString()
+                          ? new Date(selectedTicket.created_at).toLocaleDateString()
                           : "—"}
                       </p>
                     </div>
@@ -212,52 +180,30 @@ export default function TicketsHistory({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="space-y-5 mb-8"
+                    className="space-y-3 mb-6"
                   >
                     {tickets.map((ticket, index) => (
                       <motion.div
                         key={ticket.id}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ delay: index * 0.08 }}
                         onClick={() => setSelectedTicket(ticket)}
-                        className="rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl p-5 cursor-pointer transition-colors hover:bg-white/10 hover:border-white/20"
+                        className="rounded-xl border border-[#E8E3DC] bg-white/60 p-4 cursor-pointer transition-all hover:border-[#D4654A]/40 hover:bg-[#F3EFE8]"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="min-w-0">
-                            <p className="font-serif text-white font-medium mb-2">
-                              Ticket #
-                              {ticket.payment_intent_id?.slice(-8) ||
-                                ticket.id?.slice(0, 8) ||
-                                "—"}
+                            <p className="font-semibold text-[#1A1A1A] text-sm mb-1">
+                              Ticket #{ticket.payment_intent_id?.slice(-8) || ticket.id?.slice(0, 8) || "—"}
                             </p>
-                            <p className="font-serif text-white/70 text-sm mb-2">
-                              Purchased:{" "}
-                              {ticket.created_at
-                                ? new Date(
-                                    ticket.created_at,
-                                  ).toLocaleDateString()
-                                : "—"}
+                            <p className="text-[#9E9891] text-xs mb-1">
+                              Purchased: {ticket.created_at ? new Date(ticket.created_at).toLocaleDateString() : "—"}
                             </p>
-                            <p className="font-serif text-emerald-400/80 text-xs mb-1">
-                              Confirmed
-                            </p>
-                            <p className="font-serif text-white/50 text-xs">
-                              Tap to view QR code
-                            </p>
+                            <p className="text-emerald-600 text-xs font-medium mb-1">Confirmed</p>
+                            <p className="text-[#9E9891] text-xs">Tap to view QR code</p>
                           </div>
-                          <svg
-                            className="w-5 h-5 text-white/50 flex-shrink-0 mt-1"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
+                          <svg className="w-5 h-5 text-[#9E9891] flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
                       </motion.div>
@@ -269,8 +215,8 @@ export default function TicketsHistory({
                 <motion.button
                   type="button"
                   onClick={onBuyNew}
-                  className="w-full rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-6 py-4 font-serif text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40 mt-2"
-                  whileHover={{ scale: 1.02 }}
+                  className="w-full rounded-full bg-[#1A1A1A] px-6 py-3.5 text-sm font-semibold text-white hover:opacity-85 transition-all"
+                  whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   Buy New Ticket

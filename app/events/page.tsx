@@ -354,7 +354,7 @@ function EventsContent() {
   };
 
   return (
-    <main className="min-h-screen w-full overflow-hidden bg-slate-900">
+    <main className="min-h-screen w-full overflow-hidden bg-white font-dm-sans">
       <AnimatePresence mode="wait">
         {step === "events" && (
           <EventsListPage
@@ -547,112 +547,136 @@ function EventsListPage({
 }: EventsListPageProps) {
   return (
     <motion.div
-      className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: "url('/anchor-landing-bg.jpg')",
-      }}
+      className="relative min-h-screen w-full bg-white font-dm-sans"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
-
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-start px-4 sm:px-6 lg:px-8 pt-16 pb-12">
-        <div className="absolute top-6 right-4 sm:right-6 z-20 flex items-center gap-2">
+      {/* Nav */}
+      <nav className="flex items-center justify-between px-6 sm:px-8 py-5 max-w-[1200px] mx-auto">
+        <a href="/landing" className="flex items-center gap-2">
+          <img
+            src="/anchor-header-logo.png"
+            alt="Anchor"
+            width={64}
+            height={64}
+            className="rounded-2xl"
+            style={{ boxShadow: "7px 10px 6.8px 0px #00000040" }}
+          />
+        </a>
+        <div className="flex items-center gap-4 sm:gap-8">
           {isAdmin && eventsView === "my" && (
             <motion.button
               type="button"
               onClick={onAddEvent}
-              className="flex items-center gap-2 rounded-full border border-white/20 bg-white/20 backdrop-blur-xl px-4 py-2.5 font-serif text-white hover:bg-white/30 transition-colors"
-              whileHover={{ scale: 1.02 }}
+              className="hidden sm:flex items-center gap-2 text-sm font-medium text-[#6B6560] hover:text-[#1A1A1A] transition-colors"
               whileTap={{ scale: 0.98 }}
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Add event
+              Add Event
             </motion.button>
           )}
-          <motion.button
+          <button
             type="button"
             onClick={onOpenProfile}
-            className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-xl px-4 py-2.5 font-serif text-white hover:bg-white/20 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-2 bg-[#1A1A1A] text-white px-5 py-2.5 rounded-full text-[13px] font-semibold hover:opacity-85 transition-opacity"
           >
-            <svg
-              className="w-5 h-5 text-white/80"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span className="text-sm">
-              {isLoggedIn ? userName || "Account" : "Log in"}
-            </span>
-          </motion.button>
+            {isLoggedIn ? userName || "Account" : "Log in"}
+          </button>
         </div>
+      </nav>
 
-        {isAdmin && (
-          <div className="flex gap-2 mb-8">
+      {/* Hero */}
+      <section className="text-center px-8 pt-16 pb-6 max-w-[700px] mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="inline-flex items-center gap-1.5 bg-[rgba(212,101,74,0.08)] text-[#D4654A] text-[12px] font-semibold tracking-wider uppercase px-4 py-1.5 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 bg-[#D4654A] rounded-full animate-pulse" />
+            NYC Events
+          </div>
+          <h1 className="font-playfair text-4xl sm:text-5xl font-bold leading-[1.1] tracking-tight text-[#1A1A1A] mb-4">
+            Come hang with us
+          </h1>
+          <p className="text-[17px] text-[#6B6560] leading-relaxed max-w-[480px] mx-auto">
+            Parties, meetups, and events thrown by the Anchor team. Show up, meet people, have fun.
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Admin Tabs */}
+      {isAdmin && (
+        <div className="flex justify-center pt-4 pb-2">
+          <div className="flex bg-[#F3EFE8] rounded-full p-1 gap-1">
             <button
               type="button"
               onClick={() => onSwitchView("all")}
-              className={`rounded-full px-5 py-2.5 font-serif text-sm transition-colors ${
+              className={`px-7 py-2.5 rounded-full text-sm font-medium transition-all ${
                 eventsView === "all"
-                  ? "bg-white/20 text-white border border-white/30"
-                  : "bg-white/5 text-white/70 border border-white/10 hover:bg-white/10"
+                  ? "bg-white text-[#1A1A1A] font-semibold shadow-sm"
+                  : "text-[#6B6560] hover:text-[#1A1A1A]"
               }`}
             >
-              All events
+              All Events
             </button>
             <button
               type="button"
               onClick={() => onSwitchView("my")}
-              className={`rounded-full px-5 py-2.5 font-serif text-sm transition-colors ${
+              className={`px-7 py-2.5 rounded-full text-sm font-medium transition-all ${
                 eventsView === "my"
-                  ? "bg-white/20 text-white border border-white/30"
-                  : "bg-white/5 text-white/70 border border-white/10 hover:bg-white/10"
+                  ? "bg-white text-[#1A1A1A] font-semibold shadow-sm"
+                  : "text-[#6B6560] hover:text-[#1A1A1A]"
               }`}
             >
-              My events
+              My Events
             </button>
           </div>
-        )}
-
-        <motion.h1
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12 font-serif text-4xl md:text-5xl text-white font-light text-center"
-        >
-          {eventsView === "my" ? "My events" : "Events"}
-        </motion.h1>
-
-        <div className="w-full flex items-center justify-center">
-          <EventsList
-            events={events}
-            loading={loading}
-            onEventClick={onEventClick}
-          />
         </div>
-      </div>
+      )}
+
+      {/* Events Grid */}
+      <section className="max-w-[900px] mx-auto px-6 sm:px-8 pt-8 pb-20">
+        <EventsList
+          events={events}
+          loading={loading}
+          onEventClick={onEventClick}
+        />
+
+        {/* Follow CTA */}
+        {!loading && events.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.6 }}
+            className="text-center py-12 mt-4 border-[1.5px] border-dashed border-[#E8E3DC] rounded-2xl"
+          >
+            <p className="text-[15px] text-[#9E9891] mb-4">More events coming soon. Follow us to be the first to know.</p>
+            <a
+              href="https://instagram.com/anchor.dating"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#D4654A] font-semibold no-underline border-b-[1.5px] border-transparent hover:border-[#D4654A] transition-colors"
+            >
+              @anchor.dating on Instagram →
+            </a>
+          </motion.div>
+        )}
+      </section>
+
+      {/* Footer */}
+      <footer className="text-center py-10 border-t border-[#F0ECE5] max-w-[900px] mx-auto">
+        <p className="text-[13px] text-[#9E9891]">
+          © 2026 Anchor Dating · <a href="https://instagram.com/anchor.dating" target="_blank" rel="noopener noreferrer" className="text-[#6B6560] no-underline hover:text-[#D4654A] transition-colors">Instagram</a> · <a href="/privacy" className="text-[#6B6560] no-underline hover:text-[#D4654A] transition-colors">Privacy</a> · <a href="/terms" className="text-[#6B6560] no-underline hover:text-[#D4654A] transition-colors">Terms</a>
+        </p>
+      </footer>
     </motion.div>
   );
 }
@@ -661,8 +685,8 @@ export default function EventsPageRoute() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen w-full overflow-hidden bg-slate-900 flex items-center justify-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
+        <main className="min-h-screen w-full overflow-hidden bg-white flex items-center justify-center">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#E8E3DC] border-t-[#D4654A]"></div>
         </main>
       }
     >

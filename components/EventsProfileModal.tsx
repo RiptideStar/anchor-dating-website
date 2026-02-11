@@ -38,19 +38,14 @@ export default function EventsProfileModal({
   onLogout,
 }: EventsProfileModalProps) {
   const [showLoginForm, setShowLoginForm] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<EventsTicket | null>(
-    null,
-  );
+  const [selectedTicket, setSelectedTicket] = useState<EventsTicket | null>(null);
   const [qrData, setQrData] = useState("");
   const { signOut: supabaseSignOut } = useSupabaseAuth();
 
-  const generateQRData = useCallback(
-    (paymentIntentId: string) => {
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      return `${origin}/admin/scan/${paymentIntentId}`;
-    },
-    [],
-  );
+  const generateQRData = useCallback((paymentIntentId: string) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    return `${origin}/admin/scan/${paymentIntentId}`;
+  }, []);
 
   const handleTicketClick = (ticket: EventsTicket) => {
     setQrData(generateQRData(ticket.payment_intent_id));
@@ -87,49 +82,40 @@ export default function EventsProfileModal({
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 bg-slate-900/95 backdrop-blur-xl shadow-2xl"
-        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+        className="relative w-full max-w-md max-h-[90vh] overflow-y-auto bg-white rounded-2xl font-dm-sans"
+        initial={{ scale: 0.96, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+        exit={{ scale: 0.96, opacity: 0, y: 20 }}
         onClick={(e) => e.stopPropagation()}
         style={{
-          boxShadow:
-            "0 25px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04)",
         }}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-white/10 bg-slate-900/90 backdrop-blur">
-          <h2 className="font-serif text-xl text-white font-light">
+        {/* Sticky Header */}
+        <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-[#E8E3DC] bg-white rounded-t-2xl">
+          <h2 className="font-playfair text-xl font-bold text-[#1A1A1A]">
             {showLoginForm ? "Log in" : "Account"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-white/70 hover:text-white rounded-full hover:bg-white/10 transition-colors"
+            className="p-2 text-[#9E9891] hover:text-[#1A1A1A] rounded-full hover:bg-[#F3EFE8] transition-colors"
             aria-label="Close"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
+        {/* Content */}
         <div className="p-6">
           <AnimatePresence mode="wait">
             {showLoginForm ? (
@@ -157,45 +143,27 @@ export default function EventsProfileModal({
                 <button
                   type="button"
                   onClick={() => setSelectedTicket(null)}
-                  className="flex items-center gap-2 text-white/70 hover:text-white text-sm"
+                  className="flex items-center gap-2 text-[#6B6560] hover:text-[#1A1A1A] text-sm font-medium transition-colors"
                 >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                   Back to tickets
                 </button>
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
-                  <p className="font-serif text-white/80 text-sm mb-1">
-                    Status
-                  </p>
-                  <p className="font-serif text-emerald-400 font-medium mb-4">
-                    Confirmed
-                  </p>
+                <div className="rounded-2xl border border-[#E8E3DC] bg-white p-6 text-center">
+                  <p className="text-[#9E9891] text-sm mb-1">Status</p>
+                  <p className="text-emerald-600 font-semibold mb-5">Confirmed</p>
                   {qrData && (
-                    <div className="inline-flex p-4 bg-white rounded-xl">
-                      <QRCodeSVG value={qrData} size={180} level="M" />
+                    <div className="inline-flex p-4 bg-white rounded-xl border border-[#E8E3DC]">
+                      <QRCodeSVG value={qrData} size={180} level="M" fgColor="#1A1A1A" bgColor="#ffffff" />
                     </div>
                   )}
-                  <p className="font-serif text-white/60 text-xs mt-4">
+                  <p className="text-[#6B6560] text-xs mt-4 font-medium">
                     Ticket #{selectedTicket.payment_intent_id?.slice(-8) || "—"}
                   </p>
-                  <p className="font-serif text-white/50 text-xs">
-                    {selectedTicket.ticket_purchased_at ||
-                    selectedTicket.created_at
-                      ? new Date(
-                          selectedTicket.ticket_purchased_at ||
-                            selectedTicket.created_at,
-                        ).toLocaleDateString()
+                  <p className="text-[#9E9891] text-xs mt-1">
+                    {selectedTicket.ticket_purchased_at || selectedTicket.created_at
+                      ? new Date(selectedTicket.ticket_purchased_at || selectedTicket.created_at).toLocaleDateString()
                       : ""}
                   </p>
                 </div>
@@ -208,13 +176,13 @@ export default function EventsProfileModal({
                 exit={{ opacity: 0 }}
                 className="py-8 text-center"
               >
-                <p className="font-serif text-white/70 text-sm mb-6">
+                <p className="text-[#9E9891] text-sm mb-6">
                   Log in to see your profile and ticket history.
                 </p>
                 <motion.button
                   type="button"
                   onClick={() => setShowLoginForm(true)}
-                  className="rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-8 py-4 font-serif text-white backdrop-blur-xl hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40 transition-all"
+                  className="rounded-full bg-[#1A1A1A] px-8 py-3.5 text-sm font-semibold text-white hover:opacity-85 transition-all"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -227,20 +195,16 @@ export default function EventsProfileModal({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="space-y-6"
+                className="space-y-4"
               >
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <p className="font-serif text-white/60 text-xs uppercase tracking-wider mb-1">
-                    Name
-                  </p>
-                  <p className="font-serif text-white font-medium">
-                    {userName || "—"}
-                  </p>
+                <div className="rounded-xl border border-[#E8E3DC] bg-white p-4">
+                  <p className="text-[#9E9891] text-xs uppercase tracking-wider font-medium mb-1">Name</p>
+                  <p className="text-[#1A1A1A] font-semibold">{userName || "—"}</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 font-serif text-white hover:bg-white/20 transition-colors"
+                  className="w-full rounded-full border border-[#E8E3DC] bg-[#F3EFE8] px-4 py-3 text-sm font-semibold text-[#6B6560] hover:bg-[#E8E3DC] hover:text-[#1A1A1A] transition-all"
                 >
                   Log out
                 </button>

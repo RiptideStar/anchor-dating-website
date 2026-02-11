@@ -57,7 +57,6 @@ function CheckoutForm({
     setIsProcessing(true);
 
     try {
-      // First, validate the form using elements.submit()
       const { error: submitError } = await elements.submit();
 
       if (submitError) {
@@ -66,7 +65,6 @@ function CheckoutForm({
         return;
       }
 
-      // Confirm payment - client secret is already in Elements context
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -79,7 +77,6 @@ function CheckoutForm({
         toast.error(error.message || "Payment failed");
         setIsProcessing(false);
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
-        // Save ticket with userId
         if (!userId) {
           toast.error("User ID is missing. Please try again.");
           setIsProcessing(false);
@@ -107,26 +104,16 @@ function CheckoutForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6"
-      style={{ width: "100%" }}
-    >
+    <form onSubmit={handleSubmit} className="space-y-6" style={{ width: "100%" }}>
       {/* Price Display */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className="rounded-2xl border border-white/20 bg-white/5 backdrop-blur-sm p-6 text-center "
-        style={{
-          boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-          marginBottom: "10px",
-          overflow: "hidden",
-          padding: "1rem",
-        }}
+        className="rounded-2xl border border-[#E8E3DC] bg-[#F3EFE8] p-6 text-center"
       >
-        <p className="mb-2 font-serif text-sm text-white/70">Ticket Price</p>
-        <p className="font-serif text-5xl font-light text-white">
+        <p className="mb-2 text-sm text-[#9E9891] font-medium">Ticket Price</p>
+        <p className="font-playfair text-5xl font-bold text-[#1A1A1A]">
           ${ticketPrice}
         </p>
       </motion.div>
@@ -136,12 +123,8 @@ function CheckoutForm({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm p-6"
-        style={{
-          minHeight: "300px",
-          boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-          padding: "1rem",
-        }}
+        className="rounded-xl border border-[#E8E3DC] bg-white p-6"
+        style={{ minHeight: "300px" }}
       >
         {stripe ? (
           <PaymentElement
@@ -153,10 +136,10 @@ function CheckoutForm({
             }}
           />
         ) : (
-          <div className="flex h-full items-center justify-center py-8 text-center text-white/60">
+          <div className="flex h-full items-center justify-center py-8 text-center text-[#9E9891]">
             <div className="space-y-2">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-white mx-auto"></div>
-              <p className="font-serif">Loading payment methods...</p>
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#E8E3DC] border-t-[#D4654A] mx-auto"></div>
+              <p>Loading payment methods...</p>
             </div>
           </div>
         )}
@@ -167,83 +150,43 @@ function CheckoutForm({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="flex gap-4 pt-4"
-        style={{ marginTop: "20px" }}
+        className="flex gap-4 pt-2"
       >
         <motion.button
           type="button"
           onClick={onBack}
-          className="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-4 font-serif text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
+          className="flex flex-1 items-center justify-center gap-2 rounded-full border border-[#E8E3DC] bg-[#F3EFE8] px-6 py-3.5 text-sm font-semibold text-[#6B6560] hover:bg-[#E8E3DC] hover:text-[#1A1A1A] transition-all"
           whileHover={{ scale: 1.02, y: -1 }}
           whileTap={{ scale: 0.98 }}
-          style={{
-            boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-          }}
         >
-          <svg
-            className="h-5 w-5 transition-transform group-hover:-translate-x-1"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back
         </motion.button>
         <motion.button
           type="submit"
           disabled={!stripe || isProcessing}
-          className="group relative flex flex-1 items-center justify-center gap-3 overflow-hidden rounded-xl border border-white/20 bg-gradient-to-r from-pink-500/30 via-purple-500/30 to-blue-500/30 px-8 py-4 font-serif text-xl font-normal text-white backdrop-blur-xl transition-all hover:border-white/40 hover:from-pink-500/40 hover:via-purple-500/40 hover:to-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex flex-1 items-center justify-center gap-2 rounded-full bg-[#1A1A1A] px-8 py-3.5 text-sm font-semibold text-white hover:opacity-85 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           whileHover={{
             scale: isProcessing ? 1 : 1.02,
             y: isProcessing ? 0 : -1,
           }}
           whileTap={{ scale: 0.98 }}
-          style={{
-            boxShadow:
-              "0 10px 40px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-          }}
         >
-          <span className="relative z-10 flex items-center gap-3">
-            {isProcessing ? (
-              <>
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
-                Processing...
-              </>
-            ) : (
-              <>
-                Pay Now
-                <motion.svg
-                  className="h-5 w-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  initial={{ x: 0 }}
-                  whileHover={{ x: 5 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </motion.svg>
-              </>
-            )}
-          </span>
-          {!isProcessing && (
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-              initial={{ x: "-100%" }}
-              whileHover={{ x: "100%" }}
-              transition={{ duration: 0.8 }}
-            />
+          {isProcessing ? (
+            <>
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
+              Processing...
+            </>
+          ) : (
+            <>
+              Pay Now
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </>
           )}
         </motion.button>
       </motion.div>
@@ -263,7 +206,7 @@ export default function PaymentScreen({
   const [loading, setLoading] = useState(true);
   const ticketPrice = price || 29.99;
   console.log("Ticket price:", ticketPrice);
-  // Create payment intent when component mounts
+
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
@@ -301,111 +244,67 @@ export default function PaymentScreen({
 
   return (
     <motion.div
-      className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: "url('/anchor-landing-bg.jpg')",
-      }}
+      className="min-h-screen w-full bg-white font-dm-sans"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
+      {/* Nav */}
+      <nav className="flex items-center justify-between px-6 sm:px-8 py-5 max-w-[1200px] mx-auto">
+        <a href="/landing" className="flex items-center gap-2">
+          <img
+            src="/anchor-header-logo.png"
+            alt="Anchor"
+            width={64}
+            height={64}
+            className="rounded-2xl"
+            style={{ boxShadow: "7px 10px 6.8px 0px #00000040" }}
+          />
+        </a>
+      </nav>
 
-      {/* Romantic floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-20 left-10 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, -30, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 flex min-h-screen items-center justify-center p-6">
+      <div className="flex min-h-[calc(100vh-80px)] items-start justify-center px-6 pt-8 pb-20">
         <motion.div
           className="w-full max-w-lg"
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{
-            duration: 0.6,
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-          }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
           {/* Back Button */}
           <motion.button
             onClick={onBack}
-            className="mb-8 group flex items-center gap-2 text-white/80 transition-all hover:text-white"
-            whileHover={{ x: -5 }}
+            className="mb-8 flex items-center gap-2 text-sm font-medium text-[#6B6560] hover:text-[#1A1A1A] transition-colors"
+            whileHover={{ x: -3 }}
             whileTap={{ scale: 0.95 }}
           >
-            <svg
-              className="h-5 w-5 transition-transform group-hover:-translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            <span className="font-serif">Back</span>
+            Back
           </motion.button>
 
           {/* Payment Card */}
           <motion.div
-            className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl"
-            initial={{ scale: 0.95, opacity: 0 }}
+            className="bg-white rounded-2xl p-6 sm:p-8"
+            initial={{ scale: 0.98, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
             style={{
-              padding: "1rem",
-              boxShadow:
-                "0 25px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-              background:
-                "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)",
             }}
           >
-            {/* Subtle inner glow */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/5 via-transparent to-blue-500/5 pointer-events-none" />
-
             {/* Header */}
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              style={{ marginBottom: "2rem" }}
+              className="mb-8"
             >
-              <h2 className="mb-2 font-serif text-5xl md:text-6xl text-white font-light">
+              <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-2">
                 Complete Payment
               </h2>
-              <p className="text-white/60 font-serif text-base md:text-lg font-light">
+              <p className="text-[#9E9891] text-sm font-medium">
                 Secure payment processing
               </p>
             </motion.div>
@@ -416,10 +315,8 @@ export default function PaymentScreen({
                 animate={{ opacity: 1 }}
                 className="flex flex-col items-center justify-center py-12 space-y-4"
               >
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
-                <p className="font-serif text-white/70">
-                  Initializing payment...
-                </p>
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#E8E3DC] border-t-[#D4654A]"></div>
+                <p className="text-[#9E9891]">Initializing payment...</p>
               </motion.div>
             ) : clientSecret ? (
               <Elements
@@ -427,13 +324,13 @@ export default function PaymentScreen({
                 options={{
                   clientSecret,
                   appearance: {
-                    theme: "night",
+                    theme: "stripe",
                     variables: {
-                      colorPrimary: "#a855f7",
-                      colorBackground: "rgba(255, 255, 255, 0.05)",
-                      colorText: "#ffffff",
+                      colorPrimary: "#D4654A",
+                      colorBackground: "#FFFFFF",
+                      colorText: "#1A1A1A",
                       colorDanger: "#ef4444",
-                      fontFamily: "var(--font-averia-serif), serif",
+                      fontFamily: "'DM Sans', sans-serif",
                       spacingUnit: "8px",
                       borderRadius: "12px",
                     },
@@ -455,12 +352,12 @@ export default function PaymentScreen({
                 animate={{ opacity: 1 }}
                 className="py-8 text-center space-y-4"
               >
-                <p className="font-serif text-white/70">
+                <p className="text-[#9E9891]">
                   Failed to load payment form. Please refresh the page.
                 </p>
                 <motion.button
                   onClick={() => window.location.reload()}
-                  className="rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-serif text-white transition-all hover:bg-white/20 hover:border-white/30"
+                  className="rounded-full border border-[#E8E3DC] bg-[#F3EFE8] px-6 py-3 text-sm font-semibold text-[#6B6560] hover:bg-[#E8E3DC] transition-all"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >

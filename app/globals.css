@@ -54,6 +54,14 @@ html {
     var(--font-dm-serif-display), "DM Serif Display", serif !important;
 }
 
+.font-playfair {
+  font-family: var(--font-playfair), "Playfair Display", serif !important;
+}
+
+.font-dm-sans {
+  font-family: var(--font-dm-sans), "DM Sans", sans-serif !important;
+}
+
 /* Ensure font is applied to all serif elements */
 h1.font-serif,
 h2.font-serif,

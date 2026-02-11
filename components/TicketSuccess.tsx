@@ -33,21 +33,16 @@ export default function TicketSuccess({
   const [qrData, setQrData] = useState("");
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
 
-  // Generate QR code data for a specific ticket
   const generateQRData = useCallback((ticketPaymentIntentId: string) => {
-    // Return a URL that leads to the admin scan page
-    // Using window.location.origin to get the current domain
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
     return `${origin}/admin/scan/${ticketPaymentIntentId}`;
   }, []);
 
   useEffect(() => {
-    // Generate unique QR code data for the current payment (payment intent ID + email for verification)
     const qrString = generateQRData(paymentIntentId);
     setQrData(qrString);
     setSelectedTicketId(paymentIntentId);
 
-    // Fetch tickets: for this event only when eventId is set, otherwise all user tickets
     const fetchTickets = async () => {
       try {
         if (eventId) {
@@ -92,7 +87,6 @@ export default function TicketSuccess({
 
     fetchTickets();
 
-    // Send ticket email
     fetch("/api/send-ticket-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -121,7 +115,6 @@ export default function TicketSuccess({
   };
 
   const handleTicketClick = (ticket: Ticket) => {
-    // Generate QR code for the selected ticket
     const ticketQrData = generateQRData(ticket.payment_intent_id);
     setQrData(ticketQrData);
     setSelectedTicketId(ticket.payment_intent_id);
@@ -129,310 +122,227 @@ export default function TicketSuccess({
 
   return (
     <motion.div
-      className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: "url('/anchor-landing-bg.jpg')",
-      }}
+      className="min-h-screen w-full bg-white font-dm-sans"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
+      {/* Nav */}
+      <nav className="flex items-center justify-between px-6 sm:px-8 py-5 max-w-[1200px] mx-auto">
+        <a href="/landing" className="flex items-center gap-2">
+          <img
+            src="/anchor-header-logo.png"
+            alt="Anchor"
+            width={64}
+            height={64}
+            className="rounded-2xl"
+            style={{ boxShadow: "7px 10px 6.8px 0px #00000040" }}
+          />
+        </a>
+      </nav>
 
-      {/* Romantic floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-20 left-10 w-72 h-72 bg-pink-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-          animate={{
-            x: [0, -30, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 flex min-h-screen items-center justify-center p-6">
+      <div className="flex min-h-[calc(100vh-80px)] items-start justify-center px-6 pt-8 pb-20">
         <motion.div
           className="w-full max-w-lg"
-          initial={{ opacity: 0, y: 50, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{
-            duration: 0.6,
-            type: "spring",
-            stiffness: 100,
-            damping: 20,
-          }}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
           {/* Back Button */}
           {onBack && (
             <motion.button
               onClick={onBack}
-              className="mb-8 group flex items-center gap-2 text-white/80 transition-all hover:text-white"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              whileHover={{ x: -5 }}
+              className="mb-8 flex items-center gap-2 text-sm font-medium text-[#6B6560] hover:text-[#1A1A1A] transition-colors"
+              whileHover={{ x: -3 }}
               whileTap={{ scale: 0.95 }}
             >
-              <svg
-                className="h-5 w-5 transition-transform group-hover:-translate-x-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              <span className="font-serif">Back</span>
+              Back
             </motion.button>
           )}
 
           {/* Success Card */}
           <motion.div
-            className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl shadow-2xl"
-            initial={{ scale: 0.95, opacity: 0 }}
+            className="bg-white rounded-2xl p-6 sm:p-8"
+            initial={{ scale: 0.98, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
             style={{
-              padding: "2rem",
-              boxShadow:
-                "0 25px 80px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-              background:
-                "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03)",
             }}
           >
-            {/* Subtle inner glow */}
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-pink-500/5 via-transparent to-blue-500/5 pointer-events-none" />
-
+            {/* Success Header */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="mb-8 text-center"
             >
-              {/* Header */}
+              {/* Checkmark icon */}
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                style={{ marginBottom: "2rem" }}
+                className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#D4654A]/10"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 15 }}
               >
-                <h2 className="mb-2 font-serif text-5xl md:text-6xl text-white font-light">
-                  Your Ticket is Ready!
-                </h2>
-                <p className="text-white/60 font-serif text-base md:text-lg font-light">
-                  Your ticket has been sent to your registered email
-                </p>
+                <svg className="h-7 w-7 text-[#D4654A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
               </motion.div>
+              <h2 className="font-playfair text-3xl sm:text-4xl font-bold text-[#1A1A1A] mb-2">
+                Your Ticket is Ready!
+              </h2>
+              <p className="text-[#9E9891] text-sm font-medium">
+                Your ticket has been sent to your registered email
+              </p>
+            </motion.div>
 
-              {/* QR Code */}
-              {qrData && (
-                <motion.div
-                  key={selectedTicketId}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  className="mb-8 flex flex-col items-center"
-                >
-                  {tickets.length > 1 && (
-                    <p className="mb-4 font-serif text-sm text-white/60 font-light">
-                      Click on a ticket below to view its QR code
-                    </p>
-                  )}
-                  <div
-                    className="rounded-2xl border-2 border-white/20 bg-black/10 p-6 backdrop-blur-sm"
-                    style={{
-                      boxShadow:
-                        "0 10px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)",
-                      padding: "16px",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <QRCodeSVG
-                      value={qrData}
-                      size={220}
-                      level="H"
-                      includeMargin={false}
-                      fgColor="#ffffff"
-                      bgColor="transparent"
-                    />
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Ticket List */}
+            {/* QR Code */}
+            {qrData && (
               <motion.div
-                className="space-y-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                style={{ marginBottom: "2rem" }}
+                key={selectedTicketId}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8 flex flex-col items-center"
               >
-                <p
-                  className="text-center font-serif text-xl text-white/90 font-light"
-                  style={{ marginBottom: "1.5rem" }}
-                >
-                  Your Tickets
-                </p>
-
-                {loading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-white/20 border-t-white"></div>
-                  </div>
-                ) : tickets.length > 0 ? (
-                  <div className="space-y-3 max-h-64 overflow-y-auto">
-                    {tickets.map((ticket, index) => {
-                      const isSelected = selectedTicketId === ticket.payment_intent_id;
-                      return (
-                        <motion.div
-                          key={ticket.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.7 + index * 0.1 }}
-                          onClick={() => handleTicketClick(ticket)}
-                          className={`rounded-xl border p-4 backdrop-blur-sm cursor-pointer transition-all ${
-                            isSelected
-                              ? "border-white/40 bg-white/10"
-                              : "border-white/20 bg-white/5 hover:border-white/30 hover:bg-white/8"
-                          }`}
-                          style={{
-                            boxShadow: isSelected
-                              ? "inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 20px rgba(139, 92, 246, 0.3)"
-                              : "inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                            padding: "10px",
-                            marginBottom: "10px",
-                          }}
-                          whileHover={{ scale: 1.02, y: -2 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="font-serif text-white font-light">
-                                Ticket #{ticket.payment_intent_id.slice(-8)}
-                              </p>
-                              <p className="font-serif text-sm text-white/60 font-light">
-                                Purchased:{" "}
-                                {ticket.created_at
-                                  ? new Date(
-                                      ticket.created_at
-                                    ).toLocaleDateString("en-US", {
-                                      year: "numeric",
-                                      month: "short",
-                                      day: "numeric",
-                                    })
-                                  : "Date not available"}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {isSelected && (
-                                <motion.svg
-                                  initial={{ scale: 0 }}
-                                  animate={{ scale: 1 }}
-                                  className="h-5 w-5 text-purple-400"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </motion.svg>
-                              )}
-                              <div className="h-2 w-2 rounded-full bg-green-400"></div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p className="text-center font-serif text-white/60 font-light py-4">
-                    No tickets found
+                {tickets.length > 1 && (
+                  <p className="mb-4 text-sm text-[#9E9891]">
+                    Click on a ticket below to view its QR code
                   </p>
                 )}
-              </motion.div>
-
-              {/* Store Buttons */}
-              <motion.div
-                className="space-y-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-              >
-                <p
-                  className="text-center font-serif text-xl text-white/90 font-light"
-                  style={{ marginBottom: "1rem" }}
+                <div
+                  className="rounded-2xl border border-[#E8E3DC] bg-white p-5"
+                  style={{
+                    boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+                  }}
                 >
-                  Download the App
-                </p>
-
-                <div className="flex gap-4">
-                  <motion.button
-                    onClick={() => handleStoreClick("appstore")}
-                    className="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-4 font-serif text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                      padding: "1rem",
-                    }}
-                  >
-                    <svg
-                      className="h-6 w-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.96-3.24-.96-1.23 0-2.08.5-3.08.96-1.05.5-2.22.95-3.57.4-1.35-.5-2.22-1.78-3.08-3.08C.5 15.5 0 13.5 0 11.5c0-2 .5-4 1.5-5.5 1-1.5 2.5-2.5 4.5-3.5 1.5-.8 3.2-1.2 5-1.2 1.3 0 2.5.3 3.5.8 1 .5 2 .8 3 .8s2-.3 3-.8c1-.5 2.2-.8 3.5-.8 1.8 0 3.5.4 5 1.2 2 1 3.5 2 4.5 3.5 1 1.5 1.5 3.5 1.5 5.5 0 2-.5 4-1.5 5.5-1 1.5-2.5 2.5-4.5 3.5-1.5.8-3.2 1.2-5 1.2-1.3 0-2.5-.3-3.5-.8-1-.5-2-.8-3-.8s-2 .3-3 .8z" />
-                    </svg>
-                    App Store
-                  </motion.button>
-                  <motion.button
-                    onClick={() => handleStoreClick("playstore")}
-                    className="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-4 font-serif text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    style={{
-                      boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                      padding: "1rem",
-                    }}
-                  >
-                    <svg
-                      className="h-6 w-6"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
-                    </svg>
-                    Play Store
-                  </motion.button>
+                  <QRCodeSVG
+                    value={qrData}
+                    size={220}
+                    level="H"
+                    includeMargin={false}
+                    fgColor="#1A1A1A"
+                    bgColor="#ffffff"
+                  />
                 </div>
               </motion.div>
+            )}
+
+            {/* Ticket List */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="mb-8"
+            >
+              <p className="text-center font-playfair text-xl font-semibold text-[#1A1A1A] mb-4">
+                Your Tickets
+              </p>
+
+              {loading ? (
+                <div className="flex justify-center py-8">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#E8E3DC] border-t-[#D4654A]"></div>
+                </div>
+              ) : tickets.length > 0 ? (
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {tickets.map((ticket, index) => {
+                    const isSelected = selectedTicketId === ticket.payment_intent_id;
+                    return (
+                      <motion.div
+                        key={ticket.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.7 + index * 0.1 }}
+                        onClick={() => handleTicketClick(ticket)}
+                        className={`rounded-xl border p-4 cursor-pointer transition-all ${
+                          isSelected
+                            ? "border-[#D4654A] bg-[#D4654A]/5"
+                            : "border-[#E8E3DC] bg-[#F3EFE8]/50 hover:border-[#D4654A]/40 hover:bg-[#F3EFE8]"
+                        }`}
+                        whileHover={{ scale: 1.01, y: -1 }}
+                        whileTap={{ scale: 0.99 }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-semibold text-[#1A1A1A] text-sm">
+                              Ticket #{ticket.payment_intent_id.slice(-8)}
+                            </p>
+                            <p className="text-xs text-[#9E9891] mt-1">
+                              Purchased:{" "}
+                              {ticket.created_at
+                                ? new Date(ticket.created_at).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })
+                                : "Date not available"}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {isSelected && (
+                              <motion.svg
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="h-5 w-5 text-[#D4654A]"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </motion.svg>
+                            )}
+                            <div className="h-2 w-2 rounded-full bg-emerald-500"></div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-center text-[#9E9891] py-4">
+                  No tickets found
+                </p>
+              )}
+            </motion.div>
+
+            {/* Download App */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+            >
+              <p className="text-center font-playfair text-xl font-semibold text-[#1A1A1A] mb-4">
+                Download the App
+              </p>
+
+              <div className="flex gap-3">
+                <motion.button
+                  onClick={() => handleStoreClick("appstore")}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-full border border-[#E8E3DC] bg-[#F3EFE8] px-4 py-3.5 text-sm font-semibold text-[#1A1A1A] transition-all hover:bg-[#E8E3DC]"
+                  whileHover={{ scale: 1.02, y: -1 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                  </svg>
+                  App Store
+                </motion.button>
+                <motion.button
+                  onClick={() => handleStoreClick("playstore")}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-full border border-[#E8E3DC] bg-[#F3EFE8] px-4 py-3.5 text-sm font-semibold text-[#1A1A1A] transition-all hover:bg-[#E8E3DC]"
+                  whileHover={{ scale: 1.02, y: -1 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
+                  </svg>
+                  Play Store
+                </motion.button>
+              </div>
             </motion.div>
           </motion.div>
         </motion.div>

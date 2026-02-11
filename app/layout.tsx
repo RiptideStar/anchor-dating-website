@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Averia_Serif_Libre, Inter, DM_Serif_Display } from "next/font/google";
+import {
+  Averia_Serif_Libre,
+  Inter,
+  DM_Serif_Display,
+  Playfair_Display,
+  DM_Sans,
+} from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "@/components/Providers";
@@ -23,6 +29,19 @@ const dmSerifDisplay = DM_Serif_Display({
   variable: "--font-dm-serif-display",
 });
 
+const playfairDisplay = Playfair_Display({
+  weight: ["400", "600", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-playfair",
+});
+
+const dmSans = DM_Sans({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+});
+
 export const metadata: Metadata = {
   title: "Anchor - Where dating is guaranteed",
   description: "Anchor - dates, guaranteed",
@@ -36,10 +55,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSerifDisplay.variable} ${averiaSerif.variable} ${inter.variable}`}
+      className={`${dmSerifDisplay.variable} ${averiaSerif.variable} ${inter.variable} ${playfairDisplay.variable} ${dmSans.variable}`}
     >
       <body
-        className={`${dmSerifDisplay.variable} ${averiaSerif.variable} ${inter.variable} antialiased`}
+        className={`${dmSerifDisplay.variable} ${averiaSerif.variable} ${inter.variable} ${playfairDisplay.variable} ${dmSans.variable} antialiased`}
         suppressHydrationWarning
       >
         <Providers>
