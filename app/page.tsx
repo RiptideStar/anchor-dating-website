@@ -455,7 +455,7 @@ export default function Page() {
 
               {/* Screen 2-6 text — "Post" swaps to "Find" then "Match" */}
               <motion.div
-                className="absolute inset-0 w-full flex items-center justify-center md:items-start md:justify-start"
+                className="absolute inset-0 w-full flex items-center justify-center md:items-start md:justify-start pointer-events-none"
                 style={{ opacity: text2Opacity }}
               >
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.25rem] leading-[1.15] font-bold text-black">
@@ -487,7 +487,7 @@ export default function Page() {
               </motion.div>
 
               {/* Screen 7-9 text — lines build up one by one */}
-              <div className="absolute top-0 left-0 w-full">
+              <div className="absolute top-0 left-0 w-full pointer-events-none">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.25rem] leading-[1.15] font-bold text-black inline-block text-left">
                   <motion.span
                     className="block"

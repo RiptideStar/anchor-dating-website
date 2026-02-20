@@ -299,20 +299,12 @@ export default function SignupForm({
     onSubmit(formData, userId);
   };
 
-  const handleStoreClick = (store: "appstore" | "playstore") => {
-    const appStoreUrl =
-      process.env.NEXT_PUBLIC_APP_STORE_URL ||
-      "https://apps.apple.com/app/anchor";
-    const playStoreUrl =
-      process.env.NEXT_PUBLIC_PLAY_STORE_URL ||
-      "https://play.google.com/store/apps/details?id=com.anchor.app";
-
-    if (store === "appstore") {
-      window.open(appStoreUrl, "_blank");
-    } else {
-      window.open(playStoreUrl, "_blank");
-    }
-  };
+  const appStoreUrl =
+    process.env.NEXT_PUBLIC_APP_STORE_URL ||
+    "https://apps.apple.com/us/app/anchor-dating-first/id6757112248";
+  const playStoreUrl =
+    process.env.NEXT_PUBLIC_PLAY_STORE_URL ||
+    "https://play.google.com/store/apps/details?id=com.anchor.app";
 
   // Generate QR code data for a specific ticket
   const generateQRData = useCallback((ticketPaymentIntentId: string) => {
@@ -596,8 +588,10 @@ export default function SignupForm({
                       Download the App
                     </p>
                     <div className="flex gap-3">
-                      <motion.button
-                        onClick={() => handleStoreClick("appstore")}
+                      <motion.a
+                        href={appStoreUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 py-3 font-serif text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
@@ -613,9 +607,11 @@ export default function SignupForm({
                           <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.96-3.24-.96-1.23 0-2.08.5-3.08.96-1.05.5-2.22.95-3.57.4-1.35-.5-2.22-1.78-3.08-3.08C.5 15.5 0 13.5 0 11.5c0-2 .5-4 1.5-5.5 1-1.5 2.5-2.5 4.5-3.5 1.5-.8 3.2-1.2 5-1.2 1.3 0 2.5.3 3.5.8 1 .5 2 .8 3 .8s2-.3 3-.8c1-.5 2.2-.8 3.5-.8 1.8 0 3.5.4 5 1.2 2 1 3.5 2 4.5 3.5 1 1.5 1.5 3.5 1.5 5.5 0 2-.5 4-1.5 5.5-1 1.5-2.5 2.5-4.5 3.5-1.5.8-3.2 1.2-5 1.2-1.3 0-2.5-.3-3.5-.8-1-.5-2-.8-3-.8s-2 .3-3 .8z" />
                         </svg>
                         <span className="text-sm">App Store</span>
-                      </motion.button>
-                      <motion.button
-                        onClick={() => handleStoreClick("playstore")}
+                      </motion.a>
+                      <motion.a
+                        href={playStoreUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-4 py-3 font-serif text-white backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30"
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
@@ -631,7 +627,7 @@ export default function SignupForm({
                           <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" />
                         </svg>
                         <span className="text-sm">Play Store</span>
-                      </motion.button>
+                      </motion.a>
                     </div>
                   </motion.div>
 

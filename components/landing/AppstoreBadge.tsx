@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 
 const appstoreLink =
@@ -6,13 +5,18 @@ const appstoreLink =
 
 export default function AppStoreBadge() {
   return (
-    <Link href={appstoreLink} className="inline-block" target="_blank">
+    <a
+      href={appstoreLink}
+      className="inline-block"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       <Image
         src="/Download_on_the_App_Store_Badge.png"
         alt="App Store Badge"
         width={200}
         height={200}
       />
-    </Link>
+    </a>
   );
 }
