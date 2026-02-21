@@ -169,6 +169,12 @@ const LandingFooter: React.FC = () => {
             Privacy
           </a>
           <a
+            href="/terms"
+            className="hover:text-neutral-900 transition-colors"
+          >
+            Terms
+          </a>
+          <a
             href="mailto:kyle100@wharton.upenn.edu"
             className="hover:text-neutral-900 transition-colors"
           >

@@ -1,70 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { useEffect, useRef } from "react";
-
-// Romantic & Professional Animation Variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.3,
-    },
-  },
-};
+import LegalPageLayout from "@/components/LegalPageLayout";
 
 const itemVariants = {
   hidden: {
     opacity: 0,
-    y: 40,
-    scale: 0.96,
+    y: 24,
   },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
     transition: {
-      duration: 0.8,
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 20,
+      duration: 0.5,
+      ease: "easeOut" as const,
     },
   },
 };
 
-const headerVariants = {
-  hidden: {
-    opacity: 0,
-    y: -30,
-    scale: 0.95,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 1,
-      type: "spring" as const,
-      stiffness: 80,
-      damping: 15,
-    },
-  },
-};
-
-const floatingVariants = {
-  animate: {
-    y: [0, -10, 0],
-    transition: {
-      duration: 4,
-      repeat: Infinity,
-    },
-  },
-};
-
-// Animated Section Component with Romantic Motion
 function AnimatedSection({
   children,
   delay = 0,
@@ -79,16 +33,9 @@ function AnimatedSection({
       ref={ref}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-150px" }}
+      viewport={{ once: true, margin: "-80px" }}
       variants={itemVariants}
-      transition={{
-        delay,
-        duration: 0.8,
-      }}
-      whileHover={{
-        scale: 1.01,
-        transition: { duration: 0.3, ease: "easeOut" },
-      }}
+      transition={{ delay, duration: 0.5 }}
     >
       {children}
     </motion.div>
@@ -97,7 +44,6 @@ function AnimatedSection({
 
 export default function PrivacyPage() {
   useEffect(() => {
-    // Smooth scroll behavior
     document.documentElement.style.scrollBehavior = "smooth";
     return () => {
       document.documentElement.style.scrollBehavior = "auto";
@@ -105,74 +51,10 @@ export default function PrivacyPage() {
   }, []);
 
   return (
-    <div className="legal-container-premium">
-      {/* Romantic Background Elements */}
-      <div className="legal-background-gradient" />
-      <motion.div
-        className="romantic-floating-elements"
-        variants={floatingVariants}
-        animate="animate"
-      />
-
-      <motion.div
-        className="legal-content-wrapper"
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-      >
-        {/* Header with Romantic Motion */}
-        <motion.div className="legal-header" variants={headerVariants}>
-          <motion.div
-            whileHover={{
-              scale: 1.05,
-              y: -3,
-            }}
-            whileTap={{ scale: 0.98 }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 20,
-            }}
-          >
-            <Link href="/" className="brand-name">
-              <motion.span
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                Anchor
-              </motion.span>
-            </Link>
-          </motion.div>
-          <motion.h1
-            className="page-title"
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{
-              duration: 1.2,
-              delay: 0.5,
-              type: "spring" as const,
-              stiffness: 100,
-              damping: 15,
-            }}
-          >
-            Privacy Policy
-          </motion.h1>
-          <motion.p
-            className="last-updated"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.8,
-            }}
-          >
-            last updated December 6th 2025
-          </motion.p>
-        </motion.div>
-
-        {/* Content */}
-        <div className="legal-content">
+    <LegalPageLayout
+      title="Privacy Policy"
+      lastUpdated="Last updated December 6th 2025"
+    >
           <AnimatedSection>
             <p>
               Anchored (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is
@@ -1032,8 +914,6 @@ export default function PrivacyPage() {
               </strong>
             </p>
           </AnimatedSection>
-        </div>
-      </motion.div>
-    </div>
+    </LegalPageLayout>
   );
 }
